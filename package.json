@@ -8,28 +8,30 @@
     "prisma:pull": "npx prisma db pull",
     "prisma:gen": "npx prisma generate",
     "prisma:format": "npx prisma format",
-    "prisma:mig": "npx prisma migrate dev --name"
+    "prisma:mig": "npx prisma migrate dev --name",
+    "prisma:run-mig": "npx prisma migrate dev"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^3.12.0",
     "axios": "^0.26.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
-    "express": "^4.17.3",
     "dotenv": "^16.0.0",
+    "express": "^4.17.3",
     "helmet": "^5.0.2",
     "method-override": "^3.0.0",
     "nodemon": "^2.0.15",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.3",
-    "@prisma/client": "^3.12.0"
+    "typescript": "^4.6.3"
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/method-override": "0.0.32",
+    "@types/morgan": "^1.9.4",
     "@types/node": "^17.0.25",
     "@typescript-eslint/eslint-plugin": "^2.8.0",
     "@typescript-eslint/parser": "^2.8.0",
@@ -42,6 +44,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "prisma": "^3.12.0",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.3",
+    "morgan": "^1.10.0"
   }
 }
