@@ -1,20 +1,20 @@
-import { PrismaClient, Prisma, tb_usuario } from '@prisma/client'
 import User from '../entities/User';
+import { models } from '../config/dao';
 
 class UserRepository {
-    prisma: PrismaClient;
+  idKey: string;
 
-    constructor(){
-        this.prisma = new PrismaClient()
-    }
+  constructor() {
+    this.idKey = 'id';
+  }
 
-    async findAll(): Promise<tb_usuario[]>{
-        return await this.prisma.tb_usuario.findMany();
-    }
+  async findAll(): Promise<User[]> {
+    return await models.user.findMany();
+  }
 
-    async findById(id: number): Promise<tb_usuario | null>{
-        return await this.prisma.tb_usuario.findUnique({where: {id_usuario: id}});
-    }
+  async findById(id: number): Promise<User | null> {
+    return await models.user.findUnique({ where: { id: id } });
+  }
 }
 
 export default UserRepository;

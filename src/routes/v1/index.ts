@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import UserController from '../../controllers/v1/UserController';
+import userRouter from './UserRoute';
+import mapRouter from './MapRoute';
 
 const routes = Router();
 
-routes.get("/users", UserController.findAll);
-routes.get("/users/:id", UserController.findById);
+routes.use('/users', userRouter);
+routes.use('/maps', mapRouter);
 
 export default routes;
