@@ -5,102 +5,110 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_SERVIDOR_MAPAS")
+  url      = env("DATABASE_URL")
 }
 
-model tb_usuario {
-  id_usuario    BigInt       @id @default(autoincrement())
-  no_usuario    String       @db.VarChar(255)
+model User {
+  id    Int       @id @default(autoincrement())
+  name    String       @db.VarChar(255)
   email         String       @db.VarChar(255)
   password      String       @db.VarChar(255)
-  type          BigInt       
+  type          Int       
   created_at    DateTime     @default(now())
   updated_at    DateTime     @updatedAt
-  group         tb_group?
-  rel_usuario_map rel_usuario_map[]
-  rel_owner_map   rel_owner_map[]
-  rel_owner_usuario rel_owner_usuario[]
-  rel_owner_group rel_owner_group[]
-  rel_usuario_group rel_usuario_group[]
+  group         Group?
+  rel_user_map UserMap[]
+  rel_owner_map   OwnerMap[]
+  rel_owner_user  OwnerUser[]
+  rel_owner_group OwnerGroup[]
+  rel_user_group UserGroup[]
+  @@map("tb_user")
 }
 
-model rel_owner_usuario {
-  id_usuario BigInt
+model OwnerUser {
+  id  Int
   tag    Json
-  usuario   tb_usuario @relation(fields: [id_usuario], references: [id_usuario])
+  user   User @relation(fields: [id], references: [id])
 
-  @@id([id_usuario])
-  @@index([id_usuario], map: "rel_owner_usuario_id_usuario_fkey")
+  @@id([id])
+  @@index([id], map: "rel_owner_user_id_user_fkey")
+  @@map("rel_owner_user")
 }
 
 
-model rel_owner_group {
-  id_usuario BigInt
-  id_group BigInt
+model OwnerGroup {
+  id_user Int
+  id_group Int
   tag    Json
-  usuario   tb_usuario @relation(fields: [id_usuario], references: [id_usuario])
-  group   tb_group @relation(fields: [id_group], references: [id_group])
+  user   User @relation(fields: [id_user], references: [id])
+  group   Group @relation(fields: [id_group], references: [id])
 
-  @@id([id_usuario, id_group])
-  @@index([id_usuario], map: "rel_owner_group_id_usuario_fkey")
+  @@id([id_user, id_group])
+  @@index([id_user], map: "rel_owner_group_id_user_fkey")
   @@index([id_group], map: "rel_owner_group_id_group_fkey")
+  @@map("rel_owner_group")
 }
 
-model rel_usuario_group {
-  id_usuario BigInt
-  id_group BigInt
+model UserGroup {
+  id_user Int
+  id_group Int
   tag    Json
-  usuario   tb_usuario @relation(fields: [id_usuario], references: [id_usuario])
-  group   tb_group @relation(fields: [id_group], references: [id_group])
+  user User @relation(fields: [id_user], references: [id])
+  group   Group @relation(fields: [id_group], references: [id])
 
-  @@id([id_usuario, id_group])
-  @@index([id_usuario], map: "rel_usuario_group_id_usuario_fkey")
-  @@index([id_group], map: "rel_usuario_group_id_group_fkey")
+  @@id([id_user, id_group])
+  @@index([id_user], map: "rel_user_group_id_user_fkey")
+  @@index([id_group], map: "rel_user_group_id_group_fkey")
+  @@map("rel_user_group")
 }
 
 
-model tb_group {
-  id_group      BigInt       @id @default(autoincrement())
-  no_grupo      String       @db.VarChar(255)
-  id_owner      BigInt       @unique
+model Group {
+  id     Int       @id @default(autoincrement())
+  name      String       @db.VarChar(255)
+  id_owner      Int       @unique
   created_at    DateTime     @default(now())
   updated_at    DateTime     @updatedAt
-  owner         tb_usuario   @relation(fields: [id_owner], references: [id_usuario])
-  rel_owner_group rel_owner_group[]
-  rel_usuario_group rel_usuario_group[]
+  owner         User   @relation(fields: [id_owner], references: [id])
+  rel_owner_group OwnerGroup[]
+  rel_user_group  UserGroup[]
+  @@map("tb_group")
 }
 
-model rel_usuario_map {
-  id_usuario BigInt
-  id_map    BigInt
+model UserMap {
+  id_user Int
+  id_map    Int
   order     Json
-  usuario   tb_usuario @relation(fields: [id_usuario], references: [id_usuario])
-  mapa      tb_map @relation(fields: [id_map], references: [id_map])
+  user   User @relation(fields: [id_user], references: [id])
+  map      Map @relation(fields: [id_map], references: [id])
 
-  @@id([id_usuario, id_map])
-  @@index([id_usuario], map: "rel_usuario_mapa_id_usuario_fkey")
-  @@index([id_map], map: "rel_usuario_mapa_id_map_fkey")
+  @@id([id_user, id_map])
+  @@index([id_user], map: "rel_user_map_id_user_fkey")
+  @@index([id_map], map: "rel_user_map_id_map_fkey")
+  @@map("rel_user_map")
 }
 
-model rel_owner_map {
-  id_usuario BigInt
-  id_map    BigInt
+model OwnerMap {
+  id_user Int
+  id_map    Int
   tag     Json
-  usuario   tb_usuario @relation(fields: [id_usuario], references: [id_usuario])
-  mapa      tb_map @relation(fields: [id_map], references: [id_map])
+  user   User @relation(fields: [id_user], references: [id])
+  map      Map @relation(fields: [id_map], references: [id])
 
-  @@id([id_usuario, id_map])
-  @@index([id_usuario], map: "rel_owner_mapa_id_usuario_fkey")
-  @@index([id_map], map: "rel_owner_mapa_id_map_fkey")
+  @@id([id_user, id_map])
+  @@index([id_user], map: "rel_owner_map_id_user_fkey")
+  @@index([id_map], map: "rel_owner_map_id_map_fkey")
+  @@map("rel_owner_map")
 }
 
-model tb_map {
-  id_map        BigInt       @id @default(autoincrement())
-  no_map        String       @db.VarChar(255)
+model Map {
+  id       Int       @id @default(autoincrement())
+  name        String       @db.VarChar(255)
   thumb_url     String     @db.VarChar(255)
-  map_url       String       @db.VarChar(255)
+  url       String       @db.VarChar(255)
   created_at    DateTime     @default(now())
   updated_at    DateTime     @updatedAt
-  rel_usuario_map rel_usuario_map[]
-  rel_owner_map   rel_owner_map[]
+  rel_user_map UserMap[]
+  rel_owner_map   OwnerMap[]
+  @@map("tb_map")
 }

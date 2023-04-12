@@ -3,11 +3,14 @@ import cors from 'cors';
 
 import https from 'https';
 import http from 'http';
+import morgan from 'morgan';
 
 import helmet from 'helmet';
 import compression from 'compression';
 import methodOverride from 'method-override';
-import routes from './routes';
+
+import routes_v1 from "./routes/v1/index"
+import errorHandler from './middlewares/ErrorHandler';
 
 export default class Server {
   public express: express.Application;
@@ -48,10 +51,12 @@ export default class Server {
     this.express.use(compression());
     this.express.use(methodOverride('X-HTTP-Method-Override'));
     this.express.use(cors());
+    this.express.use(morgan('tiny'));
   }
 
   private routes (): void {
-    this.express.use('/v1', routes);
+    this.express.use("/v1", routes_v1);
+    this.express.use(errorHandler);
   }
 
   private routeTest (): void {
