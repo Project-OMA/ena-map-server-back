@@ -12,6 +12,16 @@ export interface UpdateUser {
   type?: number;
 }
 
+export interface ReadUser {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  type: number;
+  created_at: Date;
+  updated_at: Date;
+}
+
 export default class User {
   id: number;
   name: string;

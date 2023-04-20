@@ -5,4 +5,5 @@ const UserBodyValidator = [body(['name', 'email', 'password']).isString(), body(
 
 export const userValidator = {
   create: [...UserBodyValidator],
+  update: [...UserBodyValidator],
 };
