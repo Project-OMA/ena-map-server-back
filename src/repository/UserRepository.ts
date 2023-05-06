@@ -1,20 +1,17 @@
-import User from '../entities/User';
+import User, { CreateUserDTO, UpdateUserDTO, UserDTO } from '../entities/User';
 import { models } from '../config/dao';
+import { CrudRepository } from './CrudRepository';
 
-class UserRepository {
-  idKey: string;
-
-  constructor() {
-    this.idKey = 'id';
-  }
-
-  async findAll(): Promise<User[]> {
-    return await models.user.findMany();
-  }
-
-  async findById(id: number): Promise<User | null> {
-    return await models.user.findUnique({ where: { id: id } });
+class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDTO> {
+  public async getUserByEmail(email: string): Promise<UserDTO[]> {
+    return models.user.findMany({
+      where: {
+        email: {
+          equals: email,
+        },
+      },
+    });
   }
 }
 
-export default UserRepository;
+export const userRepository = new UserRepository('user', 'id');

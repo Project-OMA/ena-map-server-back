@@ -1,19 +1,30 @@
-export interface CreateUser {
+export interface UpdateUserDTO {
+  name?: string;
+  email?: string;
+  password?: string;
+}
+
+export type CreateUserDTO = {
   name: string;
   email: string;
   password: string;
   type: number;
-}
+};
 
-export interface UpdateUser {
-  name?: string;
-  email?: string;
-  password?: string;
-  type?: number;
-}
+export type UserDTO = {
+  id: number;
+  sub: string;
+  name: string;
+  email: string;
+  password: string;
+  type: number;
+  created_at: Date;
+  updated_at: Date;
+};
 
 export default class User {
   id: number;
+  sub: string;
   name: string;
   email: string;
   password: string;
@@ -23,6 +34,7 @@ export default class User {
 
   constructor(
     id: number,
+    sub: string,
     name: string,
     email: string,
     password: string,
@@ -31,6 +43,7 @@ export default class User {
     updated_at: Date,
   ) {
     this.id = id;
+    this.sub = sub;
     this.name = name;
     this.email = email;
     this.password = password;

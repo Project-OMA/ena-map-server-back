@@ -1,14 +1,28 @@
-export interface CreateMap {
+export type CreateMapDTO = {
+  id_owner: number;
+  tag: string;
   name: string;
   thumb_url: string;
   url: string;
-}
+};
 
-export interface UpdateMap {
+export type UpdateMapDTO = {
   name?: string;
   thumb_url?: string;
   url?: string;
-}
+  tag?: string;
+};
+
+export type MapDTO = {
+  id: number;
+  id_owner: number;
+  name: string;
+  thumb_url: string;
+  url: string;
+  tag: string;
+  created_at: Date;
+  updated_at: Date;
+};
 
 export default class Map {
   id: number;
