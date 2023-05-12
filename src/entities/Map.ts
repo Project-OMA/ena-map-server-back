@@ -2,8 +2,8 @@ export type CreateMapDTO = {
   id_owner: number;
   tag: string;
   name: string;
-  thumb_url: string;
-  url: string;
+  thumb_url?: string;
+  url?: string;
 };
 
 export type UpdateMapDTO = {

@@ -33,7 +33,6 @@ export abstract class CrudController<Entity, CreateDTO, UpdateDTO> {
   public create = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
       const data: CreateDTO = req.body;
-      console.log('teste', data);
       return res.status(200).json(await this.service.create(data));
       //   return ok(res, await this.service.create(data));
     } catch (error) {
