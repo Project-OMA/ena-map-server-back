@@ -31,7 +31,7 @@ export abstract class CrudService<Entity, CreateDTO, UpdateDTO> {
     return this.model.list();
   }
 
-  public async listAll(): Promise<Entity | null> {
+  public async listAll(): Promise<Entity[]> {
     return this.model.listAll();
   }
 }
