@@ -15,11 +15,11 @@ class GroupController extends CrudController<GroupDTO, CreateGroupDTO, UpdateGro
         }
     };
 
-    public updateWithUsers = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    public updateWithUsersAndMaps = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
         try {
           const data: UpdateGroupDTO = req.body;
           const id:number = parseInt(req.params.id);
-          return res.status(200).json(await groupService.updateWithUsers(id, data));
+          return res.status(200).json(await groupService.updateWithUsersAndMaps(id, data));
         } catch (error) {
           console.error(error);
           next(error);

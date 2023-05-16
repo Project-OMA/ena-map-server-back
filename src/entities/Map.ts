@@ -29,14 +29,18 @@ export default class Map {
   name: string;
   thumb_url: string;
   url: string;
+  id_owner: number;
+  tag: string;
   created_at: Date;
   updated_at: Date;
 
-  constructor(id: number, name: string, thumb_url: string, url: string, created_at: Date, updated_at: Date) {
+  constructor(id: number, name: string, thumb_url: string, url: string, id_owner: number, tag: string, created_at: Date, updated_at: Date) {
     this.id = id;
     this.name = name;
     this.thumb_url = thumb_url;
     this.url = url;
+    this.id_owner = id_owner;
+    this.tag = tag;
     this.created_at = created_at;
     this.updated_at = updated_at;
   }

@@ -15,13 +15,13 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
     return await groupRepository.createWithUsers(data);
   }
 
-  async updateWithUsers(id: number, data: UpdateGroupDTO): Promise<any> {
+  async updateWithUsersAndMaps(id: number, data: UpdateGroupDTO): Promise<any> {
     const [groupByName] = await groupRepository.getByName(data.name || "");
     if(groupByName && groupByName.id !== id){
       throw new AppError(400, 'Erro! Grupo já cadastrado');
     }
 
-    return await groupRepository.updateWithUsers(id, data);
+    return await groupRepository.updateWithUsersAndMaps(id, data);
   }
 
 }

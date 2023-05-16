@@ -34,7 +34,7 @@ class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDT
   }
 
   public async getByGroupId(id: number): Promise<UserDTO[]> {
-    return dao.$queryRaw<User[]>`SELECT U.id, U.name, U.email, U.type, U.sub, U.created_at, U.updated_at FROM tb_user AS U JOIN rel_user_group AS G WHERE G.id_group = ${id}`
+    return dao.$queryRaw<User[]>`SELECT U.id, U.name, U.email, U.type, U.sub, U.created_at, U.updated_at FROM tb_user AS U JOIN rel_user_group AS G ON G.id_user = U.id WHERE G.id_group = ${id}`
   }
 }
 

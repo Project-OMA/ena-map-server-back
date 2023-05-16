@@ -4,6 +4,7 @@ export type CreateGroupDTO = {
   name: string;
   id_owner: number;
   users?: number[];
+  maps?: number[];
 };
 
 export type UpdateGroupDTO = {
@@ -11,6 +12,7 @@ export type UpdateGroupDTO = {
   name?: string;
   id_owner?: number;
   users?: number[];
+  maps?: number[];
 };
 
 export type GroupDTO = {
@@ -20,6 +22,7 @@ export type GroupDTO = {
   created_at: Date;
   updated_at: Date;
   users?: UserDTO[]
+  maps?: number[];
 };
 
 export default class Group {

@@ -5,10 +5,13 @@ import authorizeUser from '../../middlewares/AuthorizateUser';
 import UserTypes from '../../constants/UserTypes';
 
 const TEACHER = UserTypes.TEACHER;
+const STUDENT = UserTypes.STUDENT;
 
 const routes = Router();
 
 routes.route('/').get(mapController.listAll);
+
+routes.route('/group_id/:id').get(authorizeUser([TEACHER, STUDENT]), validators.idParamValidator, mapController.getByGroupId);
 
 routes.route('/').post(authorizeUser([TEACHER]), validators.mapValidator.create, expressValidator, mapController.create);
 
