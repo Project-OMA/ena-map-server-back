@@ -1,3 +1,4 @@
+import { MapDTO } from "./Map";
 import { UserDTO } from "./User";
 
 export type CreateGroupDTO = {
@@ -22,7 +23,7 @@ export type GroupDTO = {
   created_at: Date;
   updated_at: Date;
   users?: UserDTO[]
-  maps?: number[];
+  maps?: MapDTO[];
 };
 
 export default class Group {
