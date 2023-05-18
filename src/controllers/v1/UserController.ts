@@ -3,6 +3,7 @@ import { CreateUserDTO, UpdateUserDTO, UserDTO } from '../../entities/User';
 import { CrudController } from './CrudController';
 import { userService } from '../../services/UserService';
 import { IAuthenticate } from '../../types/userTypes';
+import deleteFile from '../../utils/deleteFile';
 
 class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDTO> {
   public authenticate = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
@@ -14,6 +15,36 @@ class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDT
       next(error);
     }
   };
+
+  public getByGroupId = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const id = parseInt(req.params.id);
+      return res.status(200).json(await userService.getByGroupId(id));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
+  public createByFile = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    let file: any | null = req.file || null;
+
+    if(!file || !file.filename || !file.path){
+      return res.status(400).json({status: 400, message:"Erro! Arquivo não encontrado"});    
+    }
+
+    try {  
+      return res.status(200).json(await userService.createByFile(file));
+    } 
+    catch (error) {
+      console.error(error);
+      next(error);
+    } 
+    finally{
+      deleteFile(file.filename);
+    }
+  };
+
 }
 
 export const userController = new UserController(userService);

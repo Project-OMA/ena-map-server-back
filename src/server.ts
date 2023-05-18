@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
 import https from 'https';
 import http from 'http';
@@ -52,6 +53,7 @@ export default class Server {
     this.express.use(methodOverride('X-HTTP-Method-Override'));
     this.express.use(cors());
     this.express.use(morgan('tiny'));
+    dotenv.config();
   }
 
   private routes (): void {

@@ -1,3 +1,4 @@
+import AppError from '../errors/AppError';
 import { CrudRepository } from '../repository/CrudRepository';
 
 export abstract class CrudService<Entity, CreateDTO, UpdateDTO> {
@@ -8,7 +9,11 @@ export abstract class CrudService<Entity, CreateDTO, UpdateDTO> {
   }
 
   public async getById(id: number): Promise<Entity | null> {
-    return this.model.getById(id);
+    const entity: Entity | null = await this.model.getById(id);
+    if(!entity){
+      throw new AppError(404, "Erro! Objeto não encontrado")
+    }
+    return entity;
   }
 
   public async getManyById(id: number): Promise<Entity[]> {
@@ -31,7 +36,7 @@ export abstract class CrudService<Entity, CreateDTO, UpdateDTO> {
     return this.model.list();
   }
 
-  public async listAll(): Promise<Entity | null> {
+  public async listAll(): Promise<Entity[]> {
     return this.model.listAll();
   }
 }

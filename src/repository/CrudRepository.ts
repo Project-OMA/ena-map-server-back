@@ -18,7 +18,6 @@ export abstract class CrudRepository<Entity, CreateDTO, UpdateDTO> {
   }
 
   public async create(data: CreateDTO): Promise<Entity | null> {
-    console.log('teste 3');
     return this.model.create({ data });
   }
 
@@ -44,7 +43,7 @@ export abstract class CrudRepository<Entity, CreateDTO, UpdateDTO> {
     });
   }
 
-  public async listAll(): Promise<Entity | null> {
+  public async listAll(): Promise<Entity[]> {
     return this.model.findMany();
   }
 }
