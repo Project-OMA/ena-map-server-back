@@ -1,14 +1,14 @@
 import { userRepository } from '../repository/UserRepository';
 import { CrudService } from './CrudService';
 import { CreateUserDTO, UpdateUserDTO, UserDTO } from '../entities/User';
-import { hash, compare } from 'bcryptjs';
+import { hash, compare, hashSync } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { IAuthenticate } from '../types/userTypes';
 import { JWT_SECRET } from '../constants/EnvironmentVariables';
 import AppError from '../errors/AppError';
-import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { UserToken } from '../types/UserToken';
+import fs from 'fs';
 class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
 
   override async create(data: CreateUserDTO): Promise<any> {
@@ -112,6 +112,56 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
       }
       throw new AppError(401, "Não autenticado! Ocorreu um erro inesperado. " + error)
     }
+  }
+
+  async createByFile(file: any | null): Promise<any> {
+    try{
+      const f = fs.readFileSync(file.path, {encoding: 'utf-8'});
+      const json: CreateUserDTO[] = this.convertCSVToJson(f);
+      return await userRepository.createList(json);
+    } 
+    catch(error){
+      console.error(error)
+      if(error instanceof AppError) throw error;
+      throw new AppError(500, "Erro! Ocorreu um erro ao salvar os usuários");
+    }
+  };
+
+  convertCSVToJson(f: any): CreateUserDTO[] {
+    const lines: string[] = f.split('\n');
+    const headers: string[] | undefined = lines.shift()?.split(',');
+    
+    if(!headers){
+      throw new AppError(400, "Erro! O arquivo enviado não possui a coluna com o nome dos campos")
+    }
+
+    let json: CreateUserDTO[] = [];    
+    lines.forEach((line) =>{
+      let tmp: any = {};
+      let row: string[] = line.split(",");
+
+      for(var i = 0; i < headers.length; i++){
+        const key = this.rowItem(headers[i]);
+        const value: any = this.rowItem(row[i]);
+
+        switch(key){
+          case 'type': 
+            tmp[key] = parseInt(value);
+            break;
+          case 'password': 
+            tmp[key] = hashSync(value, 8);
+            break;
+          default:
+            tmp[key] = value;
+        }
+      }
+      json.push(tmp);
+    });
+    return json;
+  }
+
+  rowItem(row: string){
+    return row.endsWith('\r') ? row.replace('\r', '') : row;
   }
 }
 

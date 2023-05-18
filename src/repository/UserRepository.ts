@@ -1,7 +1,6 @@
 import User, { CreateUserDTO, UpdateUserDTO, UserDTO } from '../entities/User';
 import dao, { models } from '../config/dao';
 import { CrudRepository } from './CrudRepository';
-import { group } from 'console';
 
 class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDTO> {
   public async getUserByEmail(email: string): Promise<UserDTO[]> {
@@ -35,6 +34,12 @@ class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDT
 
   public async getByGroupId(id: number): Promise<UserDTO[]> {
     return dao.$queryRaw<User[]>`SELECT U.id, U.name, U.email, U.type, U.sub, U.created_at, U.updated_at FROM tb_user AS U JOIN rel_user_group AS G ON G.id_user = U.id WHERE G.id_group = ${id}`
+  }
+
+  public async createList(data: CreateUserDTO[]): Promise<UserDTO[]> {
+    return dao.$transaction(async (tx: any) => {
+      return await tx.user.createMany({data});
+    });
   }
 }
 
