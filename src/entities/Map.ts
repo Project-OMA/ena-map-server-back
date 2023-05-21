@@ -1,3 +1,12 @@
+export type CreateMapConvert = {
+  id_owner: number;
+  tag: string;
+  name: string;
+  thumb_url?: string;
+  files: any;
+  url?: string;
+};
+
 export type CreateMapDTO = {
   id_owner: number;
   tag: string;
@@ -34,7 +43,16 @@ export default class Map {
   created_at: Date;
   updated_at: Date;
 
-  constructor(id: number, name: string, thumb_url: string, url: string, id_owner: number, tag: string, created_at: Date, updated_at: Date) {
+  constructor(
+    id: number,
+    name: string,
+    thumb_url: string,
+    url: string,
+    id_owner: number,
+    tag: string,
+    created_at: Date,
+    updated_at: Date,
+  ) {
     this.id = id;
     this.name = name;
     this.thumb_url = thumb_url;
