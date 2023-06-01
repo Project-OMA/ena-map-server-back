@@ -24,16 +24,17 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
       .then(user => user && {...user, password: undefined});
   }
 
-  override async update(id: number, data: CreateUserDTO): Promise<any> {
+  override async update(id: number, data: UpdateUserDTO): Promise<any> {
     const [userByEmail] = await userRepository.getUserByEmail(data.email);
     if(userByEmail && userByEmail.id !== id){
       throw new AppError(400, 'Erro! E-mail já cadastrado');
     }
 
-    const { password } = data;
-    const passwordHash = await hash(password, 8);
+    if(data.password){
+      data.password = await hash(data.password, 8);
+    }
 
-    return await userRepository.create({ ...data, password: passwordHash })
+    return await userRepository.update(id, { ...data })
       .then(user => user && {...user, password: undefined});
   }
 

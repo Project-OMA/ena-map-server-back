@@ -1,11 +1,12 @@
 import { body } from 'express-validator';
 
-const UserBodyValidator = [body(['name', 'email', 'password']).isString(), body(['type']).isNumeric()];
+const UserCreateValidator = [body(['name', 'email', 'password']).isString(), body(['type']).isNumeric()];
+const UserUpdateValidator = [body(['name', 'email']).isString(), body(['password']).optional().isString(), body(['type']).isNumeric()];
 
 const UserAuthValidator = [body(['email', 'password']).isString()];
 
 export const userValidator = {
-  create: [...UserBodyValidator],
-  update: [...UserBodyValidator],
+  create: [...UserCreateValidator],
+  update: [...UserUpdateValidator],
   auth: [...UserAuthValidator],
 };
