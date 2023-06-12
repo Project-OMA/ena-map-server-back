@@ -9,9 +9,16 @@ import AppError from '../errors/AppError';
 import jwt from "jsonwebtoken";
 import { UserToken } from '../types/UserToken';
 import fs from 'fs';
+import UserTypes from '../constants/UserTypes';
 class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
 
-  override async create(data: CreateUserDTO): Promise<any> {
+  async createCustom(data: CreateUserDTO, requestToken: string): Promise<any> {
+    if(data.type === UserTypes.ADMIN || data.type === UserTypes.TEACHER){
+      const user: UserDTO = await userService.getUserByToken(requestToken);
+
+      if(user.type === UserTypes.TEACHER) throw new AppError(401, 'Erro! Não é permitido cadastrar este tipo de usuário');
+    }
+
     const [userByEmail] = await userRepository.getUserByEmail(data.email);
     if(userByEmail){
       throw new AppError(400, 'Erro! E-mail já cadastrado');
@@ -24,8 +31,15 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
       .then(user => user && {...user, password: undefined});
   }
 
-  override async update(id: number, data: UpdateUserDTO): Promise<any> {
+  async updateCustom(id: number, data: UpdateUserDTO, requestToken: string): Promise<any> {
     const [userByEmail] = await userRepository.getUserByEmail(data.email);
+
+    if(userByEmail.type === UserTypes.ADMIN || userByEmail.type === UserTypes.TEACHER){
+      const user: UserDTO = await userService.getUserByToken(requestToken);
+
+      if(user.type === UserTypes.TEACHER) throw new AppError(401, 'Erro! Não é permitido editar este tipo de usuário');
+    }
+
     if(userByEmail && userByEmail.id !== id){
       throw new AppError(400, 'Erro! E-mail já cadastrado');
     }

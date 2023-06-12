@@ -4,6 +4,7 @@ import { expressValidator, validators } from '../../middlewares/validators/valid
 import authorizeUser from '../../middlewares/AuthorizateUser';
 import UserTypes from '../../constants/UserTypes';
 
+const ADMIN = UserTypes.ADMIN;
 const TEACHER = UserTypes.TEACHER;
 const STUDENT = UserTypes.STUDENT;
 
@@ -11,13 +12,13 @@ const routes = Router();
 
 routes.route('/').get(mapController.listAll);
 
-routes.route('/group_id/:id').get(authorizeUser([TEACHER, STUDENT]), validators.idParamValidator, mapController.getByGroupId);
+routes.route('/group_id/:id').get(authorizeUser([ADMIN, TEACHER, STUDENT]), validators.idParamValidator, mapController.getByGroupId);
 
-routes.route('/').post(authorizeUser([TEACHER]), validators.mapValidator.create, expressValidator, mapController.create);
+routes.route('/').post(authorizeUser([ADMIN, TEACHER]), validators.mapValidator.create, expressValidator, mapController.create);
 
 routes.route('/:id').get(validators.idParamValidator, mapController.getById);
 
-routes.route('/:id').put(authorizeUser([TEACHER]), validators.mapValidator.update, expressValidator, mapController.update);
+routes.route('/:id').put(authorizeUser([ADMIN, TEACHER]), validators.mapValidator.update, expressValidator, mapController.update);
 
 // routes.route('/:id').delete(validators.idParamValidator, mapController.delete);
 

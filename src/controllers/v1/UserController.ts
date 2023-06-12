@@ -45,6 +45,26 @@ class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDT
     }
   };
 
+  public override create = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {    
+      const requestToken: string = req.headers['authorization'] || "";
+      return res.status(200).json(await userService.createCustom(req.body, requestToken));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
+  public override update = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {    
+      const requestToken: string = req.headers['authorization'] || "";
+      const id = parseInt(req.params.id);
+      return res.status(200).json(await userService.updateCustom(id, req.body, requestToken));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
 }
 
 export const userController = new UserController(userService);
