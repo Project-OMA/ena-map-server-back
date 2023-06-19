@@ -6,7 +6,7 @@ import { sign } from 'jsonwebtoken';
 import { IAuthenticate } from '../types/userTypes';
 import { JWT_SECRET } from '../constants/EnvironmentVariables';
 import AppError from '../errors/AppError';
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 import { UserToken } from '../types/UserToken';
 import fs from 'fs';
 import UserTypes from '../constants/UserTypes';
@@ -20,15 +20,16 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
     }
 
     const [userByEmail] = await userRepository.getUserByEmail(data.email);
-    if(userByEmail){
+    if (userByEmail) {
       throw new AppError(400, 'Erro! E-mail já cadastrado');
     }
 
     const { password } = data;
     const passwordHash = await hash(password, 8);
 
-    return await userRepository.create({ ...data, password: passwordHash })
-      .then(user => user && {...user, password: undefined});
+    return await userRepository
+      .create({ ...data, password: passwordHash })
+      .then((user) => user && { ...user, password: undefined });
   }
 
   async updateCustom(id: number, data: UpdateUserDTO, requestToken: string): Promise<any> {
@@ -93,7 +94,7 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
       },
       JWT_SECRET,
       {
-        expiresIn: '13h',
+        expiresIn: '16h',
       },
     );
 
@@ -101,69 +102,67 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
   }
 
   async getUserByToken(requestToken: string): Promise<UserDTO> {
-    try{
-      if(!requestToken){
-        throw new AppError(401, "Não autenticado! Token não encontrado")
+    try {
+      if (!requestToken) {
+        throw new AppError(401, 'Não autenticado! Token não encontrado');
       }
 
       const token: string = requestToken.substring(7);
 
       const decodedUserData: UserToken = jwt.verify(token, JWT_SECRET) as UserToken;
 
-      if(!decodedUserData || !decodedUserData.id){
-        throw new AppError(401, "Não autenticado! Usuário não encontrado")
+      if (!decodedUserData || !decodedUserData.id) {
+        throw new AppError(401, 'Não autenticado! Usuário não encontrado');
       }
-      
+
       let user: UserDTO | null = await userRepository.getById(decodedUserData.id);
 
-      if(!user){
-        throw new AppError(401, "Não autenticado! Usuário não encontrado")
+      if (!user) {
+        throw new AppError(401, 'Não autenticado! Usuário não encontrado');
       }
       return user;
-
-    } catch(error){ 
-      if(error instanceof AppError){
+    } catch (error) {
+      if (error instanceof AppError) {
         throw error;
       }
-      throw new AppError(401, "Não autenticado! Ocorreu um erro inesperado. " + error)
+      throw new AppError(401, 'Não autenticado! Ocorreu um erro inesperado. ' + error);
     }
   }
 
   async createByFile(file: any | null): Promise<any> {
-    try{
-      const f = fs.readFileSync(file.path, {encoding: 'utf-8'});
+    try {
+      const f = fs.readFileSync(file.path, { encoding: 'utf-8' });
       const json: CreateUserDTO[] = this.convertCSVToJson(f);
       return await userRepository.createList(json);
-    } 
-    catch(error){
-      console.error(error)
-      if(error instanceof AppError) throw error;
-      throw new AppError(500, "Erro! Ocorreu um erro ao salvar os usuários");
+    } catch (error) {
+      console.error(error);
+      if (error instanceof AppError) throw error;
+      throw new AppError(500, 'Erro! Ocorreu um erro ao salvar os usuários');
     }
-  };
+  }
 
   convertCSVToJson(f: any): CreateUserDTO[] {
     const lines: string[] = f.split('\n');
     const headers: string[] | undefined = lines.shift()?.split(',');
-    
-    if(!headers){
-      throw new AppError(400, "Erro! O arquivo enviado não possui a coluna com o nome dos campos")
+
+    if (!headers) {
+      throw new AppError(400, 'Erro! O arquivo enviado não possui a coluna com o nome dos campos');
     }
 
-    let json: CreateUserDTO[] = [];    
-    lines.forEach((line) =>{
+    let json: CreateUserDTO[] = [];
+    lines.forEach((line) => {
       let tmp: any = {};
-      let row: string[] = line.split(",");
+      let row: string[] = line.split(',');
 
-      for(var i = 0; i < headers.length; i++){
+      for (var i = 0; i < headers.length; i++) {
         const key = this.rowItem(headers[i]);
         const value: any = this.rowItem(row[i]);
 
-        switch(key){
-          case 'type': 
+        switch (key) {
+          case 'type':
             tmp[key] = parseInt(value);
             break;
-          case 'password': 
+          case 'password':
             tmp[key] = hashSync(value, 8);
             break;
           default:
@@ -175,7 +174,7 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
     return json;
   }
 
-  rowItem(row: string){
+  rowItem(row: string) {
     return row.endsWith('\r') ? row.replace('\r', '') : row;
   }
 }
