@@ -1,5 +1,5 @@
-import { MapDTO } from "./Map";
-import { UserDTO } from "./User";
+import { MapDTO } from './Map';
+import { UserDTO } from './User';
 
 export type CreateGroupDTO = {
   name: string;
@@ -9,9 +9,7 @@ export type CreateGroupDTO = {
 };
 
 export type UpdateGroupDTO = {
-  id: number;
   name?: string;
-  id_owner?: number;
   users?: number[];
   maps?: number[];
 };
@@ -22,7 +20,7 @@ export type GroupDTO = {
   id_owner: number;
   created_at: Date;
   updated_at: Date;
-  users?: UserDTO[]
+  users?: UserDTO[];
   maps?: MapDTO[];
 };
 

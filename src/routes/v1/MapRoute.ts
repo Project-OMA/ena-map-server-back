@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { mapController } from '../../controllers/v1/MapController';
 import { expressValidator, validators } from '../../middlewares/validators/validator';
-import authorizeUser from '../../middlewares/AuthorizateUser';
+import { authorizateUser } from '../../middlewares/AuthorizateUser';
 import UserTypes from '../../constants/UserTypes';
 import multer from 'multer';
 import { handlerFileMap } from '../../middlewares/fileHandler';
@@ -14,24 +14,28 @@ const routes = Router();
 
 routes.route('/').get(mapController.listAll);
 
-routes.route('/group_id/:id').get(authorizeUser([ADMIN, TEACHER, STUDENT]), validators.idParamValidator, mapController.getByGroupId);
-
-routes.route('/:id').put(authorizeUser([ADMIN, TEACHER]), validators.mapValidator.update, expressValidator, mapController.update);
-
-routes.route('/').post(
-  // authorizeUser([TEACHER]),
-  multer().array('file'),
-  handlerFileMap,
-  validators.mapValidator.create,
-  expressValidator,
-  mapController.create,
-);
-
-routes.route('/:id').get(validators.idParamValidator, mapController.getById);
+routes
+  .route('/group_id/:id')
+  .get(authorizateUser([ADMIN, TEACHER, STUDENT]), validators.idParamValidator, mapController.getByGroupId);
 
 routes
   .route('/:id')
-  .put(authorizeUser([TEACHER]), validators.mapValidator.update, expressValidator, mapController.update);
+  .put(authorizateUser([ADMIN, TEACHER]), validators.mapValidator.update, expressValidator, mapController.update);
+
+routes.route('/search').get(authorizateUser([ADMIN, TEACHER]), mapController.getMapsByName);
+
+routes
+  .route('/')
+  .post(
+    authorizateUser([ADMIN, TEACHER]),
+    multer().array('file'),
+    handlerFileMap,
+    validators.mapValidator.create,
+    expressValidator,
+    mapController.create,
+  );
+
+routes.route('/:id').get(validators.idParamValidator, mapController.getById);
 
 routes.route('/convert_xml').post(multer().array('file'), handlerFileMap, mapController.convertXmlFile);
 

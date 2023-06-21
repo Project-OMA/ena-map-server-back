@@ -4,6 +4,16 @@ import Map, { CreateMapDTO, UpdateMapDTO, MapDTO } from '../../entities/Map';
 import { CrudController } from './CrudController';
 
 class MapController extends CrudController<MapDTO, CreateMapDTO, UpdateMapDTO> {
+  public getMapsByName = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const { query } = req.query;
+      return res.status(200).json(await mapService.getMapsByName(query as string));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
   public getByGroupId = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
       const id = parseInt(req.params.id);

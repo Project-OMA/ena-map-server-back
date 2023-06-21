@@ -14,6 +14,7 @@ import routes_v1 from './routes/v1/index';
 import errorHandler from './middlewares/ErrorHandler';
 import serveStatic from 'serve-static';
 import path from 'path';
+import { Authentication } from './middlewares/AuthorizateUser';
 
 export default class Server {
   public express: express.Application;
@@ -66,7 +67,7 @@ export default class Server {
   }
 
   private routes(): void {
-    this.express.use('/v1', routes_v1);
+    this.express.use('/v1', Authentication, routes_v1);
     this.express.use(errorHandler);
   }
 

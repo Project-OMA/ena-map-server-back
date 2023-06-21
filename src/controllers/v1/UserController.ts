@@ -29,26 +29,23 @@ class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDT
   public createByFile = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     let file: any | null = req.file || null;
 
-    if(!file || !file.filename || !file.path){
-      return res.status(400).json({status: 400, message:"Erro! Arquivo não encontrado"});    
+    if (!file || !file.filename || !file.path) {
+      return res.status(400).json({ status: 400, message: 'Erro! Arquivo não encontrado' });
     }
 
-    try {  
+    try {
       return res.status(200).json(await userService.createByFile(file));
-    } 
-    catch (error) {
+    } catch (error) {
       console.error(error);
       next(error);
-    } 
-    finally{
+    } finally {
       deleteFile(file.filename);
     }
   };
 
   public override create = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
-    try {    
-      const requestToken: string = req.headers['authorization'] || "";
-      return res.status(200).json(await userService.createCustom(req.body, requestToken));
+    try {
+      return res.status(200).json(await userService.createCustom(req.body));
     } catch (error) {
       console.error(error);
       next(error);
@@ -56,8 +53,8 @@ class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDT
   };
 
   public override update = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
-    try {    
-      const requestToken: string = req.headers['authorization'] || "";
+    try {
+      const requestToken: string = req.headers['authorization'] || '';
       const id = parseInt(req.params.id);
       return res.status(200).json(await userService.updateCustom(id, req.body, requestToken));
     } catch (error) {

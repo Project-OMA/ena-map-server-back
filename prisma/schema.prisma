@@ -9,47 +9,42 @@ datasource db {
 }
 
 model User {
-  id    Int       @id @default(autoincrement())
-  sub   String    @default(uuid())
-  name    String       @db.VarChar(255)
-  email         String       @db.VarChar(255)
-  password      String       @db.VarChar(255)
-  type          Int       
-  created_at    DateTime     @default(now())
-  updated_at    DateTime     @updatedAt
-  
+  id             Int         @id @default(autoincrement())
+  name           String      @db.VarChar(255)
+  email          String      @db.VarChar(255)
+  password       String      @db.VarChar(255)
+  type           Int
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  sub            String      @default(uuid())
   rel_user_group UserGroup[]
-  map   Map[]
-  group         Group[]
+  group          Group[]
+  map            Map[]
 
   @@map("tb_user")
 }
 
-
 model UserGroup {
-  id_user Int
+  id_user  Int
   id_group Int
-  user User @relation(fields: [id_user], references: [id])
-  group   Group @relation(fields: [id_group], references: [id])
+  group    Group @relation(fields: [id_group], references: [id])
+  user     User  @relation(fields: [id_user], references: [id])
 
   @@id([id_user, id_group])
   @@index([id_user], map: "rel_user_group_id_user_fkey")
   @@index([id_group], map: "rel_user_group_id_group_fkey")
-
   @@map("rel_user_group")
 }
 
-
 model Group {
-  id     Int       @id @default(autoincrement())
-  name      String       @db.VarChar(255)
-  id_owner      Int       
-  created_at    DateTime     @default(now())
-  updated_at    DateTime     @updatedAt
-  user   User @relation(fields: [id_owner], references: [id])
-
-  rel_group_map GroupMap[]
-  rel_user_group  UserGroup[]
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  id             Int         @id @default(autoincrement())
+  name           String      @db.VarChar(255)
+  id_owner       Int
+  userOwner      User        @relation(fields: [id_owner], references: [id])
+  rel_group_map  GroupMap[]
+  rel_user_group UserGroup[]
 
   @@index([id_owner], map: "tb_group_id_owner_fkey")
   @@map("tb_group")
@@ -57,10 +52,10 @@ model Group {
 
 model GroupMap {
   id_group Int
-  id_map    Int
-  order     Json
-  group   Group @relation(fields: [id_group], references: [id])
-  map      Map @relation(fields: [id_map], references: [id])
+  id_map   Int
+  order    Json
+  group    Group @relation(fields: [id_group], references: [id])
+  map      Map   @relation(fields: [id_map], references: [id])
 
   @@id([id_group, id_map])
   @@index([id_group], map: "rel_user_map_id_group_fkey")
@@ -69,15 +64,15 @@ model GroupMap {
 }
 
 model Map {
-  id       Int       @id @default(autoincrement())
-  id_owner      Int       
-  name        String       @db.VarChar(255)
   thumb_url     String     @db.VarChar(255)
-  url       String       @db.VarChar(255)
-  tag    Json
-  created_at    DateTime     @default(now())
-  updated_at    DateTime     @updatedAt
-  userOwner  User   @relation(fields: [id_owner], references: [id])
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+  id            Int        @id @default(autoincrement())
+  name          String     @db.VarChar(255)
+  url           String     @db.VarChar(255)
+  id_owner      Int
+  tag           Json
+  userOwner     User       @relation(fields: [id_owner], references: [id])
   rel_group_map GroupMap[]
 
   @@index([id_owner], map: "tb_map_id_owner_fkey")

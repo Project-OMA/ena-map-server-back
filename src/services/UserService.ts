@@ -11,15 +11,9 @@ import { UserToken } from '../types/UserToken';
 import fs from 'fs';
 import UserTypes from '../constants/UserTypes';
 class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
-
-  async createCustom(data: CreateUserDTO, requestToken: string): Promise<any> {
-    if(data.type === UserTypes.ADMIN || data.type === UserTypes.TEACHER){
-      const user: UserDTO = await userService.getUserByToken(requestToken);
-
-      if(user.type === UserTypes.TEACHER) throw new AppError(401, 'Erro! Não é permitido cadastrar este tipo de usuário');
-    }
-
+  async createCustom(data: CreateUserDTO): Promise<any> {
     const [userByEmail] = await userRepository.getUserByEmail(data.email);
+
     if (userByEmail) {
       throw new AppError(400, 'Erro! E-mail já cadastrado');
     }
@@ -35,22 +29,15 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
   async updateCustom(id: number, data: UpdateUserDTO, requestToken: string): Promise<any> {
     const [userByEmail] = await userRepository.getUserByEmail(data.email);
 
-    if(userByEmail.type === UserTypes.ADMIN || userByEmail.type === UserTypes.TEACHER){
-      const user: UserDTO = await userService.getUserByToken(requestToken);
-
-      if(user.type === UserTypes.TEACHER) throw new AppError(401, 'Erro! Não é permitido editar este tipo de usuário');
-    }
-
-    if(userByEmail && userByEmail.id !== id){
+    if (userByEmail && userByEmail.id !== id) {
       throw new AppError(400, 'Erro! E-mail já cadastrado');
     }
 
-    if(data.password){
+    if (data.password) {
       data.password = await hash(data.password, 8);
     }
 
-    return await userRepository.update(id, { ...data })
-      .then(user => user && {...user, password: undefined});
+    return await userRepository.update(id, { ...data }).then((user) => user && { ...user, password: undefined });
   }
 
   override async listAll(): Promise<any | null> {
@@ -99,34 +86,6 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
     );
 
     return { access_token: token };
-  }
-
-  async getUserByToken(requestToken: string): Promise<UserDTO> {
-    try {
-      if (!requestToken) {
-        throw new AppError(401, 'Não autenticado! Token não encontrado');
-      }
-
-      const token: string = requestToken.substring(7);
-
-      const decodedUserData: UserToken = jwt.verify(token, JWT_SECRET) as UserToken;
-
-      if (!decodedUserData || !decodedUserData.id) {
-        throw new AppError(401, 'Não autenticado! Usuário não encontrado');
-      }
-
-      let user: UserDTO | null = await userRepository.getById(decodedUserData.id);
-
-      if (!user) {
-        throw new AppError(401, 'Não autenticado! Usuário não encontrado');
-      }
-      return user;
-    } catch (error) {
-      if (error instanceof AppError) {
-        throw error;
-      }
-      throw new AppError(401, 'Não autenticado! Ocorreu um erro inesperado. ' + error);
-    }
   }
 
   async createByFile(file: any | null): Promise<any> {

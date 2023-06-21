@@ -32,7 +32,6 @@ export abstract class CrudController<Entity, CreateDTO, UpdateDTO> {
 
   public create = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
-      console.log('testee', req);
       const data: CreateDTO = req.body;
       return res.status(200).json(await this.service.create(data));
       //   return ok(res, await this.service.create(data));
@@ -67,9 +66,7 @@ export abstract class CrudController<Entity, CreateDTO, UpdateDTO> {
 
   public listAll = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
-      //   const data = req.pagination;
       return res.status(200).json(await this.service.listAll());
-      //   return ok(res, await this.service.listAll());
     } catch (error) {
       console.error(error);
       next(error);
