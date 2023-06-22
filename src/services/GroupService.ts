@@ -25,7 +25,12 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
   //   return await groupRepository.updateWithUsersAndMaps(id, data);
   // }
 
+  public override async getById(id: number): Promise<GroupDTO | null> {
+    return this.buildGroup(await groupRepository.getById(id));
+  }
+
   private buildGroup(data: any): any {
+    console.log('data.rel_group_map', data);
     const maps = data.rel_group_map.map((item: any) => ({
       ...item.map,
     }));
@@ -54,7 +59,7 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
       await groupMapService.deleteMany(id);
       await groupMapService.createMany(id, data.maps as number[]);
 
-      return this.buildGroup(await groupRepository.getGroupById(id));
+      return this.buildGroup(await groupRepository.getById(id));
     }
   }
 
@@ -69,7 +74,7 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
 
       await groupMapService.createMany(groupCreated.id, data.maps as number[]);
 
-      return this.buildGroup(await groupRepository.getGroupById(groupCreated.id));
+      return this.buildGroup(await groupRepository.getById(groupCreated.id));
     }
   }
 }

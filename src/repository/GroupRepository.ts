@@ -15,19 +15,19 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
     });
   }
 
-  override async getById(id: number): Promise<GroupDTO | null> {
-    let group: GroupDTO = await models.group.findUnique({ where: { id } });
+  // override async getById(id: number): Promise<GroupDTO | null> {
+  //   let group: GroupDTO = await models.group.findUnique({ where: { id } });
 
-    if (group) {
-      group.maps = await dao.$queryRaw<
-        MapDTO[]
-      >`SELECT m.id, m.name, m.id_owner, m.url, m.thumb_url, m.tag, m.created_at, m.updated_at FROM tb_map AS m JOIN rel_group_map AS rel ON rel.id_map = m.id WHERE rel.id_group = ${group.id}`;
-      group.users = await dao.$queryRaw<
-        UserDTO[]
-      >`SELECT u.id, u.name, u.email, u.type, u.sub, u.created_at, u.updated_at FROM tb_user AS u JOIN rel_user_group AS rel ON rel.id_user = u.id WHERE rel.id_group = ${group.id}`;
-    }
-    return group;
-  }
+  //   if (group) {
+  //     group.maps = await dao.$queryRaw<
+  //       MapDTO[]
+  //     >`SELECT m.id, m.name, m.id_owner, m.url, m.thumb_url, m.tag, m.created_at, m.updated_at FROM tb_map AS m JOIN rel_group_map AS rel ON rel.id_map = m.id WHERE rel.id_group = ${group.id}`;
+  //     group.users = await dao.$queryRaw<
+  //       UserDTO[]
+  //     >`SELECT u.id, u.name, u.email, u.type, u.sub, u.created_at, u.updated_at FROM tb_user AS u JOIN rel_user_group AS rel ON rel.id_user = u.id WHERE rel.id_group = ${group.id}`;
+  //   }
+  //   return group;
+  // }
 
   // public async createWithUsers(data: CreateGroupDTO): Promise<GroupDTO> {
   //   return dao.$transaction(async (tx: any) => {
@@ -140,7 +140,7 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
   //   });
   // }
 
-  public async getGroupById(id: number): Promise<any> {
+  override async getById(id: number): Promise<any> {
     return models.group.findUnique({
       where: {
         id: id,
@@ -151,7 +151,11 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
         created_at: true,
         updated_at: true,
         rel_group_map: {
+          orderBy: {
+            order: 'asc',
+          },
           select: {
+            order: true,
             map: {
               select: {
                 id: true,
