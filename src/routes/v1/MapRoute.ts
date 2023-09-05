@@ -37,6 +37,8 @@ routes
 
 routes.route('/:id').get(validators.idParamValidator, mapController.getById);
 
+routes.route('/:id/download/public').get(validators.idParamValidator, mapController.downloadMap);
+
 routes.route('/convert_xml').post(multer().array('file'), handlerFileMap, mapController.convertXmlFile);
 
 // routes.route('/:id').delete(validators.idParamValidator, mapController.delete);

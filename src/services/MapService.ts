@@ -2,6 +2,9 @@ import { mapRepository } from '../repository/MapRespository';
 import { MapDTO, CreateMapDTO, UpdateMapDTO, CreateMapConvert } from '../entities/Map';
 import { CrudService } from './CrudService';
 import { scriptReader } from '../utils/scriptReader';
+import fs from 'fs';
+import path from 'path';
+import { badRequest } from '../helpers/responseHelper';
 
 class MapService extends CrudService<MapDTO, CreateMapDTO, UpdateMapDTO> {
   async getMapsByName(query: string) {
@@ -29,6 +32,40 @@ class MapService extends CrudService<MapDTO, CreateMapDTO, UpdateMapDTO> {
       });
     } else {
       throw new Error('Failed to convert Map Json.');
+    }
+  }
+
+  async downloadMap(idMapa: number, res: any): Promise<any> {
+    const mapResponse = await mapRepository.getById(idMapa);
+
+    if (mapResponse) {
+      const mapJson = JSON.stringify({
+        id_professor: mapResponse.id,
+        id_mapa: mapResponse.id,
+        mapa_json: JSON.parse(mapResponse.tag),
+      });
+      const pathName = path.resolve(
+        __dirname,
+        '../../',
+        `assets/json/${mapResponse.name.toLowerCase().replace(' ', '-')}.json`,
+      );
+
+      fs.writeFileSync(pathName, mapJson);
+      const fileName = `${mapResponse.name.toLowerCase().replace(' ', '-')}.json`;
+      const fileStream = fs.createReadStream(pathName);
+
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=${mapResponse.name.toLowerCase().replace(' ', '-')}.json`,
+      );
+      res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
+
+      const buffer = fs.readFileSync(pathName);
+
+      console.log('buffer', buffer);
+      res.end(buffer);
+
+      fs.unlinkSync(pathName);
     }
   }
 }

@@ -28,6 +28,8 @@ routes
 
 routes.route('/:id').get(authorizateUser([ADMIN, TEACHER]), validators.idParamValidator, groupController.getById);
 
+routes.route('/:id/maps').get(validators.idParamValidator, groupController.getMapsFromGroup);
+
 routes
   .route('/:id')
   .put(

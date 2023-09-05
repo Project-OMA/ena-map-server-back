@@ -16,6 +16,10 @@ class GroupMapService extends CrudService<GroupMapDTO, CreateGroupMapDTO, Update
   async deleteMany(groupId: number) {
     await groupMapRepository.deleteMany(groupId);
   }
+
+  async getMapsByGroup(groupId: number) {
+    return await groupMapRepository.getMapByGroupId(groupId);
+  }
 }
 
 export const groupMapService = new GroupMapService(groupMapRepository);

@@ -7,7 +7,7 @@ import { UserToken } from '../types/UserToken';
 import { JWT_SECRET } from '../constants/EnvironmentVariables';
 import { unauthorized } from '../helpers/responseHelper';
 
-const exclusions = ['/auth'];
+const exclusions = ['/auth', '/public'];
 
 const IsToExcludePath = (path: string, exclusionsSelecteds = exclusions) => {
   return exclusionsSelecteds.some((routeToExclude) => {

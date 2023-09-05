@@ -34,6 +34,17 @@ class MapController extends CrudController<MapDTO, CreateMapDTO, UpdateMapDTO> {
       next(error);
     }
   };
+
+  public downloadMap = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const id = parseInt(req.params.id);
+
+      return mapService.downloadMap(id, res);
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
 }
 
 export const mapController = new MapController(mapService);

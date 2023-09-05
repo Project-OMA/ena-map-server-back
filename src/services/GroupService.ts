@@ -29,6 +29,24 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
     return this.buildGroup(await groupRepository.getById(id));
   }
 
+  public async getMapsByGroup(id: number): Promise<any> {
+    const result = await groupMapService.getMapsByGroup(id);
+
+    if (result.length > 0) {
+      const resultFormated = result.map((item) => {
+        return {
+          id_professor: item.id_owner,
+          id_mapa: item.id_map,
+          mapa_json: JSON.parse(item.tag),
+        };
+      });
+
+      return resultFormated;
+    }
+
+    throw new Error(`Group hasn't maps`);
+  }
+
   private buildGroup(data: any): any {
     console.log('data.rel_group_map', data);
     const maps = data.rel_group_map.map((item: any) => ({
