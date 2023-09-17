@@ -62,6 +62,18 @@ class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDT
       next(error);
     }
   };
+
+  public override listAll = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const search = req.query.search !== undefined ? String(req.query.search) : "";
+      const page = req.query.page !== undefined ? String(req.query.page) : "";
+      const limit = req.query.limit !== undefined ? String(req.query.limit) : "";
+      return res.status(200).json(await userService.getAllPaged(page, limit, search));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
 }
 
 export const userController = new UserController(userService);

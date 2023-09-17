@@ -40,8 +40,12 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
     return await userRepository.update(id, { ...data }).then((user) => user && { ...user, password: undefined });
   }
 
-  override async listAll(): Promise<any | null> {
-    return await userRepository.listAll();
+  async getAllPaged(page: string, limit: string, search: string): Promise<any | null> {
+    const users = await userRepository.getAllPaged(page, limit, search);
+    const totalUsersCount = await userRepository.countAll()
+
+    const take = limit ? Number(limit) : users.length
+    return { data: users, limit: take, page: Number(page) || 0, count: totalUsersCount};
   }
 
   override async getById(id: number) {
