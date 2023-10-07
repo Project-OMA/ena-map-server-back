@@ -3,6 +3,7 @@ import { CrudRepository } from './CrudRepository';
 import { CreateGroupDTO, GroupDTO, UpdateGroupDTO } from '../entities/Group';
 import { UserDTO } from '../entities/User';
 import { MapDTO } from '../entities/Map';
+import { UserMapDTO } from '../entities/UserMap';
 
 class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGroupDTO> {
   public async getByName(name: string): Promise<GroupDTO[]> {
@@ -13,6 +14,23 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
         },
       },
     });
+  }
+
+  public async getGroupMapByUser(id: number):Promise<MapDTO[]> {
+    return dao.$queryRaw<any>`
+      SELECT mapa.* FROM  tb_group AS  tg 
+      inner join rel_group_map AS grupoMap 
+      on grupoMap.id_group = tg.id 
+      inner join rel_user_group AS userGroup
+      on userGroup.id_group  = userGroup.id_group 
+      inner join rel_map_user AS userMap 
+      on userMap.id_map = grupoMap.id_map and userMap.in_completed = false
+      inner join tb_map as mapa on mapa.id = userMap.id_map
+      where userGroup.id_user = ${id}
+      GROUP by userMap.id_map 
+      order by tg.created_at, grupoMap.order
+      LIMIT 1
+      `
   }
 
   // override async getById(id: number): Promise<GroupDTO | null> {

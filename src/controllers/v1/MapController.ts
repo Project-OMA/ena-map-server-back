@@ -45,6 +45,8 @@ class MapController extends CrudController<MapDTO, CreateMapDTO, UpdateMapDTO> {
       next(error);
     }
   };
+
+  
 }
 
 export const mapController = new MapController(mapService);

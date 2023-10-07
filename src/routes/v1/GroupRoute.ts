@@ -11,6 +11,9 @@ const STUDENT = UserTypes.STUDENT;
 
 const routes = Router();
 
+const pubRoutes = Router();
+
+
 routes.route('/').get(authorizateUser([ADMIN, TEACHER]), groupController.listAll);
 
 routes
@@ -39,6 +42,14 @@ routes
     groupController.updateGroup,
   );
 
+pubRoutes
+  .route('/next-map/:email')
+  .get(
+    validators.groupValidator.userMaps,
+    expressValidator,
+    groupController.getGroupMapByUser,
+  );
+
 // routes
 //   .route('/:id/include/users/maps')
 //   .put(
@@ -48,6 +59,6 @@ routes
 //     groupController.updateWithUsersAndMaps,
 //   );
 
-const groupRouter = routes;
+export const groupRouter = routes;
 
-export default groupRouter;
+export const groupPubRouter = pubRoutes;

@@ -10,7 +10,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import methodOverride from 'method-override';
 
-import routes_v1 from './routes/v1/index';
+import {routes, pubRoutes} from './routes/v1/index';
 import errorHandler from './middlewares/ErrorHandler';
 import serveStatic from 'serve-static';
 import path from 'path';
@@ -67,7 +67,8 @@ export default class Server {
   }
 
   private routes(): void {
-    this.express.use('/v1', Authentication, routes_v1);
+    this.express.use('/v1', Authentication, routes);
+    this.express.use('/pub', pubRoutes);
     this.express.use(errorHandler);
   }
 

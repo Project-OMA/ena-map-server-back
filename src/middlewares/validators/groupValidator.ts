@@ -14,7 +14,13 @@ const GroupBodyUpdateValidator = [
   body(['maps']).optional().isArray(),
 ];
 
+const GroupBodyUserMapsValidator = [
+  param('email').isString(),
+];
+
+
 export const groupValidator = {
   create: [...GroupBodyValidator],
   update: [...GroupBodyUpdateValidator],
+  userMaps: [...GroupBodyUserMapsValidator]
 };

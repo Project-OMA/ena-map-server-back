@@ -5,6 +5,8 @@ import { groupRepository } from '../repository/GroupRepository';
 import { userService } from './UserService';
 import { userGroupService } from './UserGroupService';
 import { groupMapService } from './GroupMapService';
+import { userMapService } from './UserMapService';
+import { userRepository } from '../repository/UserRepository';
 
 class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO> {
   // async createWithUsers(data: CreateGroupDTO): Promise<any> {
@@ -92,9 +94,37 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
 
       await groupMapService.createMany(groupCreated.id, data.maps as number[]);
 
+      await userMapService.createMany(data.maps as number[], data.users as number[]);
+
       return this.buildGroup(await groupRepository.getById(groupCreated.id));
     }
   }
+
+
+  public async getGroupMapByUser(email: string):Promise<any> {
+
+    const [userSelected] = await userRepository.getUserByEmail(email);
+
+    if(!userSelected){
+      throw new Error('User not found.');
+    }    
+
+    const [mapResponse] = await groupRepository.getGroupMapByUser(userSelected.id);
+
+    if(!mapResponse) {
+      throw new Error('No Map left');
+    }
+
+    return {
+      id_map: mapResponse.id,
+      id_user: userSelected.id,
+      id_owner: mapResponse.id_owner,
+      name: mapResponse.name,
+      json: mapResponse.tag
+    };
+
+  }
+
 }
 
 export const groupService = new GroupService(groupRepository);
