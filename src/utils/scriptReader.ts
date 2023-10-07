@@ -8,8 +8,7 @@ class ScriptReader {
     const jsonConverted = await new Promise((resolve, reject) => {
       let jsonBuilder = '';
 
-      console.log('testee 2', data);
-      const scriptPython = spawn('python', [
+      const scriptPython = spawn('python3', [
         './scripts/convert/convert.py',
         JSON.stringify({ minify: data.minify, file: data.file, fileName: data.file.name }),
       ]);
