@@ -48,6 +48,6 @@ export abstract class CrudRepository<Entity, CreateDTO, UpdateDTO> {
   }
 
   public async countAll(): Promise<number> {
-    return await models.map.count();
+    return await this.model.count();
   }
 }
