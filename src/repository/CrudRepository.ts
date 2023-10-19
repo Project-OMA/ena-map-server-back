@@ -46,4 +46,8 @@ export abstract class CrudRepository<Entity, CreateDTO, UpdateDTO> {
   public async listAll(): Promise<Entity[]> {
     return this.model.findMany();
   }
+
+  public async countAll(): Promise<number> {
+    return await this.model.count();
+  }
 }

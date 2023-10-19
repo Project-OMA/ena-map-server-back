@@ -10,9 +10,10 @@ const TEACHER = UserTypes.TEACHER;
 const STUDENT = UserTypes.STUDENT;
 
 const routes = Router();
-
 const pubRoutes = Router();
 
+routes.route('/listAll').get(authorizateUser([ADMIN, TEACHER]), groupController.listAll);
+routes.route('/').get(authorizateUser([ADMIN, TEACHER]), validators.paginationValidator, groupController.findAllPaged);
 
 routes.route('/').get(authorizateUser([ADMIN, TEACHER]), groupController.listAll);
 

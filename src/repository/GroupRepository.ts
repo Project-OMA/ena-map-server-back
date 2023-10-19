@@ -3,6 +3,7 @@ import { CrudRepository } from './CrudRepository';
 import { CreateGroupDTO, GroupDTO, UpdateGroupDTO } from '../entities/Group';
 import { UserDTO } from '../entities/User';
 import { MapDTO } from '../entities/Map';
+import { PrismaPaginationQuery } from '../types/prismaPaginationQuery';
 import { UserMapDTO } from '../entities/UserMap';
 
 class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGroupDTO> {
@@ -205,6 +206,34 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
         },
       },
     });
+  }
+
+  public async getAllPaged(page: string, limit: string, search: string): Promise<GroupDTO[]> {
+    let query: PrismaPaginationQuery = {
+      select: {
+        id: true,
+        name: true,
+        id_owner: true,
+        created_at: true,
+        updated_at: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    }
+
+    if(search) query.where = {  name: { contains: search } }
+
+    let skip: number | null = null;
+    let take: number | null = null;
+    if(page || limit){
+      take = Number(limit)
+      skip = (Number(page) - 1) * take
+      query.skip = skip
+      query.take = take
+    }
+    
+    return await models.group.findMany(query);
   }
 }
 

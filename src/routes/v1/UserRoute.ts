@@ -11,7 +11,8 @@ const STUDENT = UserTypes.STUDENT;
 
 const routes = Router();
 
-routes.route('/').get(authorizateUser([ADMIN, TEACHER]), userController.listAll);
+routes.route('/listAll').get(authorizateUser([ADMIN, TEACHER]), userController.listAll);
+routes.route('/').get(authorizateUser([ADMIN, TEACHER]), validators.paginationValidator, userController.findAllPaged);
 
 routes
   .route('/group_id/:id')

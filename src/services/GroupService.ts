@@ -100,6 +100,13 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
     }
   }
 
+  async findAllPaged(page: string, limit: string, search: string): Promise<any | null> {
+    const users = await groupRepository.getAllPaged(page, limit, search);
+    const count = await groupRepository.countAll();
+
+    const take = limit ? Number(limit) : users.length;
+    return { data: users, limit: take, page: Number(page), count };
+  }
 
   public async getGroupMapByUser(email: string):Promise<any> {
 
@@ -124,7 +131,6 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
     };
 
   }
-
 }
 
 export const groupService = new GroupService(groupRepository);
