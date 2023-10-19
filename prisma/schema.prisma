@@ -20,6 +20,7 @@ model User {
   rel_user_group UserGroup[]
   group          Group[]
   map            Map[]
+  rel_map_user  UserMap[]
 
   @@map("tb_user")
 }
@@ -63,6 +64,20 @@ model GroupMap {
   @@map("rel_group_map")
 }
 
+model UserMap {
+  id_user  Int
+  id_map Int
+  in_completed Boolean
+  map      Map   @relation(fields: [id_map], references: [id])
+  user     User  @relation(fields: [id_user], references: [id])
+
+
+  @@id([id_user, id_map])
+  @@index([id_user], map: "rel_user_map_id_user_fkey")
+  @@index([id_map], map: "rel_user_map_id_map_fkey")
+  @@map("rel_map_user")
+}
+
 model Map {
   thumb_url     String     @db.VarChar(255)
   created_at    DateTime   @default(now())
@@ -74,6 +89,7 @@ model Map {
   tag           Json
   userOwner     User       @relation(fields: [id_owner], references: [id])
   rel_group_map GroupMap[]
+  rel_map_user  UserMap[]
 
   @@index([id_owner], map: "tb_map_id_owner_fkey")
   @@map("tb_map")

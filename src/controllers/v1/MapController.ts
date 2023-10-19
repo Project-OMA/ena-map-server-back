@@ -45,7 +45,7 @@ class MapController extends CrudController<MapDTO, CreateMapDTO, UpdateMapDTO> {
       next(error);
     }
   };
-  
+
   public findAllPaged = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
       const search = req.query.search !== undefined ? String(req.query.search) : "";

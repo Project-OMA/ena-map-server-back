@@ -1,0 +1,8 @@
+{
+  "apps": [
+    {
+      "name": "ena-server-back",
+      "script": "./dist/app.js"
+    }
+  ]
+}

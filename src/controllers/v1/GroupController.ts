@@ -71,6 +71,17 @@ class GroupController extends CrudController<GroupDTO, CreateGroupDTO, UpdateGro
       next(error);
     }
   };
+
+  public getGroupMapByUser = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const email = req.params.email;
+      return res.status(200).json(await groupService.getGroupMapByUser(email));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
 }
 
 export const groupController = new GroupController(groupService);
