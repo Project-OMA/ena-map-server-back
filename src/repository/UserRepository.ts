@@ -1,7 +1,18 @@
 import User, { CreateUserDTO, UpdateUserDTO, UserDTO } from '../entities/User';
 import dao, { models } from '../config/dao';
 import { CrudRepository } from './CrudRepository';
+import { PagedList } from '../types/pagedList';
+import { PrismaPaginationQuery } from '../types/prismaPaginationQuery';
 
+const select = {
+  id: true,
+  name: true,
+  email: true,
+  type: true,
+  sub: true,
+  created_at: true,
+  updated_at: true
+};
 class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDTO> {
   public async getUserByEmail(email: string): Promise<UserDTO[]> {
     return models.user.findMany({
@@ -16,20 +27,34 @@ class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDT
   public override async getById(id: number){
     return await models.user.findUnique({
       where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        type: true,
-        sub: true,
-        created_at: true,
-        updated_at: true
-      },
+      select,
     });
   }
 
-  public override async listAll(): Promise<UserDTO[]> {
-    return dao.$queryRaw<User[]>`SELECT id, name, email, type, sub, created_at, updated_at FROM tb_user`
+  public async findAll(query: string) {
+    return models.map.findMany({ select });
+  }
+
+  public async findAllPaged(page: string, limit: string, search: string): Promise<UserDTO[]> {
+    let query: PrismaPaginationQuery = {
+      select,
+      orderBy: {
+        created_at: "desc",
+      },
+    }
+
+    if(search) query.where = {  name: { contains: search } }
+    
+    let skip: number | null = null;
+    let take: number | null = null;
+    if(page || limit){
+      take = Number(limit)
+      skip = (Number(page) - 1) * take
+      query.skip = skip
+      query.take = take
+    }
+
+    return await models.user.findMany(query);
   }
 
   public async getByGroupId(id: number): Promise<UserDTO[]> {

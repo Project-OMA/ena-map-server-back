@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { param, validationResult } from 'express-validator';
+import { param, validationResult, query } from 'express-validator';
 import AppError from '../../errors/AppError';
 import { userValidator } from './userValidator';
 import { mapValidator } from './mapValidator';
@@ -14,10 +14,16 @@ export const expressValidator = (req: Request, res: Response, next: NextFunction
 };
 
 export const idParamValidator = [param('id').isString()];
+export const paginationValidator = [
+  query('search').optional().isString(),
+  query('page').optional().isNumeric(),
+  query('perPage').optional().isNumeric()
+];
 
 export const validators = {
   idParamValidator,
   userValidator,
   mapValidator,
-  groupValidator
+  groupValidator,
+  paginationValidator
 };

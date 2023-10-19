@@ -12,7 +12,8 @@ const STUDENT = UserTypes.STUDENT;
 
 const routes = Router();
 
-routes.route('/').get(mapController.listAll);
+routes.route('/listAll').get(validators.paginationValidator, mapController.listAll);
+routes.route('/').get(validators.paginationValidator, mapController.findAllPaged);
 
 routes
   .route('/group_id/:id')

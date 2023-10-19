@@ -68,6 +68,15 @@ class MapService extends CrudService<MapDTO, CreateMapDTO, UpdateMapDTO> {
       fs.unlinkSync(pathName);
     }
   }
+
+  
+  async findAllPaged(page: string, limit: string, search: string): Promise<any | null> {
+    const users = await mapRepository.getAllPaged(page, limit, search);
+    const count = await mapRepository.countAll();
+
+    const take = limit ? Number(limit) : users.length;
+    return { data: users, limit: take, page: Number(page), count};
+  }
 }
 
 export const mapService = new MapService(mapRepository);
