@@ -59,13 +59,26 @@ class GroupController extends CrudController<GroupDTO, CreateGroupDTO, UpdateGro
       next(error);
     }
   };
-
+  
   public findAllPaged = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
       const search = req.query.search !== undefined ? String(req.query.search) : "";
       const page = req.query.page !== undefined ? String(req.query.page) : "1";
       const limit = req.query.limit !== undefined ? String(req.query.limit) : "10";
       return res.status(200).json(await groupService.findAllPaged(page, limit, search));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
+  public findAllPagedByUserId = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const search = req.query.search !== undefined ? String(req.query.search) : "";
+      const page = req.query.page !== undefined ? String(req.query.page) : "1";
+      const limit = req.query.limit !== undefined ? String(req.query.limit) : "10";
+      return res.status(200).json(await groupService.findAllPaged(page, limit, search, userId));
     } catch (error) {
       console.error(error);
       next(error);
