@@ -16,7 +16,6 @@ routes.route('/listAll').get(authorizateUser([ADMIN, TEACHER]), groupController.
 
 routes.route('/users/:userId/groups')
   .get(
-    authorizateUser([ADMIN, TEACHER]), 
     validators.userIdParamValidator, 
     validators.paginationValidator, 
     groupController.findAllPagedByUserId
