@@ -1,11 +1,7 @@
 export interface PrismaPaginationQuery {
     select: object;
     orderBy?: object;
-    where?: {
-      name: {
-        contains: string;
-      };
-    };
+    where?: object;
     take?: number;
     skip?: number;
 }

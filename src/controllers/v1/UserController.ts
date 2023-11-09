@@ -68,7 +68,9 @@ class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDT
       const search = req.query.search !== undefined ? String(req.query.search) : "";
       const page = req.query.page !== undefined ? String(req.query.page) : "1";
       const limit = req.query.limit !== undefined ? String(req.query.limit) : "10";
-      return res.status(200).json(await userService.findAllPaged(page, limit, search));
+      const userTypes = req.query.userTypes ? String(req.query.userTypes).split(",").map(Number) : undefined;
+
+      return res.status(200).json(await userService.findAllPaged(req, page, limit, search, userTypes));
     } catch (error) {
       console.error(error);
       next(error);

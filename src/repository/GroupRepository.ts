@@ -208,7 +208,10 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
     });
   }
 
-  public async getAllPaged(page: string, limit: string, search: string): Promise<GroupDTO[]> {
+  public async getAllPaged(page: string, limit: string, search: string, userId: number | undefined = undefined): Promise<any> {
+    let take: number = Number(limit);
+    let skip: number = (Number(page) - 1) * take;
+
     let query: PrismaPaginationQuery = {
       select: {
         id: true,
@@ -220,21 +223,20 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
       orderBy: {
         created_at: "desc",
       },
-    }
-
-    if(search) query.where = {  name: { contains: search } }
-
-    let skip: number | null = null;
-    let take: number | null = null;
-    if(page || limit){
-      take = Number(limit)
-      skip = (Number(page) - 1) * take
-      query.skip = skip
-      query.take = take
+      where: {
+        name: search ? { contains: search } : undefined,
+        rel_user_group: userId ? { some: {id_user: userId} } : undefined
+      },
+      skip,
+      take
     }
     
-    return await models.group.findMany(query);
+    return {
+      groups: await models.group.findMany(query),
+      count: await models.group.count({where: query.where, skip, take})
+    }
   }
+
 }
 
 export const groupRepository = new GroupRepository('group', 'id');

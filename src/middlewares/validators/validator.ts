@@ -14,14 +14,18 @@ export const expressValidator = (req: Request, res: Response, next: NextFunction
 };
 
 export const idParamValidator = [param('id').isString()];
+export const userIdParamValidator = [param('id').isString()];
+
 export const paginationValidator = [
   query('search').optional().isString(),
   query('page').optional().isNumeric(),
-  query('perPage').optional().isNumeric()
+  query('perPage').optional().isNumeric(),
+  query('userTypes').optional().isString()
 ];
 
 export const validators = {
   idParamValidator,
+  userIdParamValidator,
   userValidator,
   mapValidator,
   groupValidator,

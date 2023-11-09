@@ -35,7 +35,7 @@ class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDT
     return models.map.findMany({ select });
   }
 
-  public async findAllPaged(page: string, limit: string, search: string): Promise<UserDTO[]> {
+  public async findAllPaged(page: string, limit: string, search: string, userTypes: Number[] | undefined = undefined): Promise<any> {
     let query: PrismaPaginationQuery = {
       select,
       orderBy: {
@@ -54,7 +54,23 @@ class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDT
       query.take = take
     }
 
-    return await models.user.findMany(query);
+    if (userTypes && Array.isArray(userTypes) && userTypes.length > 0) {
+      query.where = {
+        AND: [
+          {
+            type: {
+              in: userTypes
+            }
+          },
+          query.where
+        ]
+      };
+    }
+
+    return {
+      users: await models.user.findMany(query),
+      count: await models.user.count({where: query.where, skip, take})
+    }
   }
 
   public async getByGroupId(id: number): Promise<UserDTO[]> {

@@ -13,9 +13,16 @@ const routes = Router();
 const pubRoutes = Router();
 
 routes.route('/listAll').get(authorizateUser([ADMIN, TEACHER]), groupController.listAll);
-routes.route('/').get(authorizateUser([ADMIN, TEACHER]), validators.paginationValidator, groupController.findAllPaged);
 
-routes.route('/').get(authorizateUser([ADMIN, TEACHER]), groupController.listAll);
+routes.route('/users/:userId/groups')
+  .get(
+    validators.userIdParamValidator, 
+    validators.paginationValidator, 
+    groupController.findAllPagedByUserId
+  )
+;
+
+routes.route('/').get(authorizateUser([ADMIN, TEACHER]), validators.paginationValidator, groupController.findAllPaged);
 
 routes
   .route('/')
