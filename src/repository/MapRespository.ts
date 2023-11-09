@@ -8,6 +8,7 @@ const select = {
   name: true,
   id_owner: true,
   tag: true,
+  thumb_url: true,
 }
 class MapRepository extends CrudRepository<MapDTO, CreateMapDTO, UpdateMapDTO> {
 
