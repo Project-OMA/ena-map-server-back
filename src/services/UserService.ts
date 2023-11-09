@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { userRepository } from '../repository/UserRepository';
 import { CrudService } from './CrudService';
 import { CreateUserDTO, UpdateUserDTO, UserDTO } from '../entities/User';
@@ -40,13 +41,29 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
     return await userRepository.update(id, { ...data }).then((user) => user && { ...user, password: undefined });
   }
 
-  async findAllPaged(page: string, limit: string, search: string): Promise<any | null> {
-    const users = await userRepository.findAllPaged(page, limit, search);
-    const count = await userRepository.countAll()
+
+
+  async findAllPaged(request: Request, page: string, limit: string, search: string, userTypes: Number[] | undefined = undefined): Promise<any | null> {
+    const user = this.decodeUser(request)
+
+    let filteredUserTypes: Number[];
+
+    if(userTypes && Array.isArray(userTypes) && userTypes.length > 0){
+      filteredUserTypes = userTypes.map(Number).filter(type => user.type <= type)
+
+      if(filteredUserTypes.length < 1) filteredUserTypes = Object.values(UserTypes).map(Number).filter(type => user.type <= type)
+
+    } else {
+      filteredUserTypes = Object.values(UserTypes).map(Number).filter(type => user.type <= type)
+    }
+
+    const { users, count } = await userRepository.findAllPaged(page, limit, search, filteredUserTypes);
 
     const take = limit ? Number(limit) : users.length
     return { data: users, limit: take, page: Number(page), count};
   }
+
+
 
   override async getById(id: number) {
     const user: any = await userRepository.getById(id);
@@ -102,6 +119,14 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
       if (error instanceof AppError) throw error;
       throw new AppError(500, 'Erro! Ocorreu um erro ao salvar os usuários');
     }
+  }
+
+  decodeUser(req: Request): UserToken {
+    const token: string | undefined = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      throw new AppError(500, 'Erro! Ocorreu um erro ao salvar os usuários');
+    }
+    return jwt.verify(token, JWT_SECRET) as UserToken;
   }
 
   convertCSVToJson(f: any): CreateUserDTO[] {
