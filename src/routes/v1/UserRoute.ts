@@ -24,6 +24,8 @@ routes
 
 routes.route('/auth').post(validators.userValidator.auth, expressValidator, userController.authenticate);
 
+routes.route('/check-auth').get(() => { return {status: 'success'}});
+
 routes.route('/:id').get(authorizateUser([ADMIN, TEACHER]), validators.idParamValidator, userController.getById);
 
 routes
