@@ -28,6 +28,7 @@ class MapController extends CrudController<MapDTO, CreateMapDTO, UpdateMapDTO> {
     try {
       const { minify, files } = req.body;
 
+      console.log('files', files)
       return res.status(200).json(await mapService.convertXmlFile({ minify, files: files[0] }));
     } catch (error) {
       console.error(error);

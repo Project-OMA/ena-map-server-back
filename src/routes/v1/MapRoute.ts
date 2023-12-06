@@ -21,7 +21,12 @@ routes
 
 routes
   .route('/:id')
-  .put(authorizateUser([ADMIN, TEACHER]), validators.mapValidator.update, expressValidator, mapController.update);
+  .put(authorizateUser([ADMIN, TEACHER]), multer().array('file'),
+  handlerFileMap,
+  validators.mapValidator.update,
+  expressValidator, 
+  mapController.update
+);
 
 routes.route('/search').get(authorizateUser([ADMIN, TEACHER]), mapController.getMapsByName);
 

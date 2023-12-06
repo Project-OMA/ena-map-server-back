@@ -16,6 +16,15 @@ class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDT
     }
   };
 
+  public checkAuth = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      return res.status(200).json({status: 'success'});
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
   public getByGroupId = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
       const id = parseInt(req.params.id);

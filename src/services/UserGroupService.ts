@@ -5,6 +5,7 @@ import { CreateUserGroupDTO, UpdateUserGroupDTO, UserGroupDTO } from '../entitie
 class UserGroupService extends CrudService<UserGroupDTO, CreateUserGroupDTO, UpdateUserGroupDTO> {
   async createMany(groupId: number, users: number[]) {
     for (const idUser of users as number[]) {
+      console.log('oiiii')
       await userGroupRepository.create({
         id_group: groupId,
         id_user: idUser,
@@ -13,7 +14,9 @@ class UserGroupService extends CrudService<UserGroupDTO, CreateUserGroupDTO, Upd
   }
 
   async deleteMany(groupId: number) {
-    await userGroupRepository.deleteMany(groupId);
+    const teste = await userGroupRepository.deleteMany(groupId);
+    console.log('alooo', teste)
+    return teste;
   }
 }
 

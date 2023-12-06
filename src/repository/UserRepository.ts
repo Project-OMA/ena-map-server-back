@@ -31,6 +31,24 @@ class UserRepository extends CrudRepository<UserDTO, CreateUserDTO, UpdateUserDT
     });
   }
 
+  public override async listAll(): Promise<UserDTO[]> {
+    return models.user.findMany({
+      select: {
+        created_at: true,
+        email: true,
+        id: true,
+        name: true,
+        sub: true,
+        type:true,
+        updated_at: true,
+      },
+      orderBy: {
+        created_at: "desc",
+      }
+    })
+  }
+
+
   public async findAll(query: string) {
     return models.map.findMany({ select });
   }

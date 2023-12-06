@@ -28,11 +28,22 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
       on userMap.id_map = grupoMap.id_map and userMap.in_completed = false
       inner join tb_map as mapa on mapa.id = userMap.id_map
       where userGroup.id_user = ${id}
-      GROUP by userMap.id_map 
       order by tg.created_at, grupoMap.order
       LIMIT 1
       `
   }
+
+  public async getMapsFromGroupByUserAndGroup(idGroup: number, idUser:number, limit: number, offset: number):Promise<MapDTO[]> {
+    return dao.$queryRaw<any>`
+      SELECT tm.*
+      FROM servidor_mapas.rel_user_group as userGroup 
+      INNER JOIN servidor_mapas.rel_group_map rgm on rgm.id_group = userGroup.id_group  
+      INNER JOIN servidor_mapas.tb_map tm on tm.id = rgm.id_map 
+      WHERE userGroup.id_group = ${idGroup} and userGroup.id_user = ${idUser}
+      LIMIT ${limit} OFFSET ${offset}
+      `
+  }
+ 
 
   // override async getById(id: number): Promise<GroupDTO | null> {
   //   let group: GroupDTO = await models.group.findUnique({ where: { id } });

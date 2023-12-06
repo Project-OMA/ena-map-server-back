@@ -7,6 +7,18 @@ export type CreateMapConvert = {
   url?: string;
 };
 
+
+export type UpdateMapConvert = {
+  name?: string;
+  thumb_url?: string;
+  url?: string;
+  tag?: string;
+  files?: any;
+  last_file_name?: string;
+  new_file?: string;
+};
+
+
 export type CreateMapDTO = {
   id_owner: number;
   tag: string;
@@ -20,6 +32,7 @@ export type UpdateMapDTO = {
   thumb_url?: string;
   url?: string;
   tag?: string;
+  files?: any;
 };
 
 export type MapDTO = {

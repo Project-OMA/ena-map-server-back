@@ -50,6 +50,14 @@ routes
     groupController.updateGroup,
   );
 
+routes
+  .route('/:idGroup/user/:idUser')
+  .get(
+    validators.groupValidator.mapsByUser,
+    expressValidator,
+    groupController.getMapsFromGroupByUserAndGroup,
+  );
+  
 pubRoutes
   .route('/next-map/:email')
   .get(

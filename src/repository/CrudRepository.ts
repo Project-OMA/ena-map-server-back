@@ -34,6 +34,7 @@ export abstract class CrudRepository<Entity, CreateDTO, UpdateDTO> {
   }
 
   public async update(id: number, data: UpdateDTO): Promise<Entity | null> {
+    console.log('testeee -111')
     return this.model.update({ where: { [this.idKey]: id }, data });
   }
 

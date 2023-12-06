@@ -41,6 +41,8 @@ class GroupController extends CrudController<GroupDTO, CreateGroupDTO, UpdateGro
 
   public updateGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
+
+      console.log('testeeeee')
       const id = parseInt(req.params.id);
       const data = req.body;
       return res.status(200).json(await groupService.update(id, data));
@@ -95,6 +97,20 @@ class GroupController extends CrudController<GroupDTO, CreateGroupDTO, UpdateGro
     }
   };
 
+  public getMapsFromGroupByUserAndGroup = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const idUser = req.params.idUser;
+      const idGroup = req.params.idGroup;
+      const limit = req.query.limit;
+      const offset = req.query.offset;
+
+      console.log(idUser, idGroup)
+      return res.status(200).json(await groupService.getMapsFromGroupByUserAndGroup(parseInt(idUser), parseInt(idGroup) , parseInt(limit as string), parseInt(offset as string)));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
 }
 
 export const groupController = new GroupController(groupService);

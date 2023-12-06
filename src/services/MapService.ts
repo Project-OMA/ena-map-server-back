@@ -1,5 +1,5 @@
 import { mapRepository } from '../repository/MapRespository';
-import { MapDTO, CreateMapDTO, UpdateMapDTO, CreateMapConvert } from '../entities/Map';
+import { MapDTO, CreateMapDTO, UpdateMapDTO, CreateMapConvert, UpdateMapConvert } from '../entities/Map';
 import { CrudService } from './CrudService';
 import { scriptReader } from '../utils/scriptReader';
 import fs from 'fs';
@@ -15,27 +15,82 @@ class MapService extends CrudService<MapDTO, CreateMapDTO, UpdateMapDTO> {
     return await mapRepository.getByGroupId(id);
   }
 
+
+  async saveXmlFile(data: any) {
+    const pathName = path.resolve(
+      __dirname,
+      '../../',
+      `assets/xml/${data.name.toLowerCase().replace(' ', '-')}.xml`,
+    );
+
+    fs.writeFileSync(pathName, data.file.content);
+  }
+
   async convertXmlFile(data: any): Promise<JSON | undefined> {
     return await scriptReader.convertXmlToJson(data);
   }
 
-  override async create(data: CreateMapConvert): Promise<any> {
-    const mapJson = await this.convertXmlFile({ minify: true, file: data.files[0] });
+  async deleteOldFileXml(data: any) {
+    const pathName = path.resolve(
+      __dirname,
+      '../../',
+      `assets/xml/${data.fileName.toLowerCase().replace(' ', '-')}.xml`,
+    );
 
-    if (mapJson) {
-      return mapRepository.create({
-        name: data.name,
-        id_owner: Number(data.id_owner),
-        tag: JSON.stringify(mapJson),
-        thumb_url: data.files[0].name,
-        url: data.url,
-      });
-    } else {
-      throw new Error('Failed to convert Map Json.');
+    fs.unlinkSync(pathName);
+  };
+
+  override async update(id: number, data: UpdateMapConvert): Promise<any> {
+    const newData: any = {
+      name: data.name,
+      url: data.url,
     }
+
+    if(data.new_file === 'true') {
+      this.deleteOldFileXml(data.last_file_name)
+      this.saveXmlFile({ name: data.files[0].name,  file: data.files[0] })
+      const mapJson = await this.convertXmlFile({ name: data.files[0].name, minify: true, file: data.files[0] });
+
+      if(!mapJson) {
+        throw new Error('Failed to convert JSON');
+      }
+
+      newData.tag = JSON.stringify(mapJson);
+      newData.thumb_url = data.files[0].name;
+    }
+
+
+    return mapRepository.update(id, newData);
+    
   }
 
   async downloadMap(idMapa: number, res: any): Promise<any> {
+    const mapResponse = await mapRepository.getById(idMapa);
+
+    if (mapResponse) {
+     
+      const pathName = path.resolve(
+        __dirname,
+        '../../',
+        `assets/xml/${mapResponse.thumb_url.toLowerCase().replace(' ', '-')}.xml`,
+      );
+
+      const fileName = `${mapResponse.thumb_url.toLowerCase().replace(' ', '-')}.xml`;
+
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=${mapResponse.thumb_url.toLowerCase().replace(' ', '-')}.xml`,
+      );
+      res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
+
+      const buffer = fs.readFileSync(pathName);
+
+      console.log('buffer', buffer);
+      res.end(buffer);
+    }
+  }
+
+  async downloadMapJson(idMapa: number, res: any): Promise<any> {
     const mapResponse = await mapRepository.getById(idMapa);
 
     if (mapResponse) {

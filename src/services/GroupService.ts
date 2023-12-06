@@ -74,10 +74,11 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
 
     if (groupUpdated) {
       await userGroupService.deleteMany(id);
-      await userGroupService.createMany(id, data.users as number[]);
+      await userGroupService.createMany(id, []);
 
       await groupMapService.deleteMany(id);
       await groupMapService.createMany(id, data.maps as number[]);
+
 
       return this.buildGroup(await groupRepository.getById(id));
     }
@@ -129,6 +130,10 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
       json: mapResponse.tag
     };
 
+  }
+
+  public async getMapsFromGroupByUserAndGroup(idUser: number, idGroup: number, limit: number, offset: number): Promise<any> {
+   return await groupRepository.getMapsFromGroupByUserAndGroup(idGroup, idUser, limit, offset)
   }
 }
 
