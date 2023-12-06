@@ -74,7 +74,7 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
 
     if (groupUpdated) {
       await userGroupService.deleteMany(id);
-      await userGroupService.createMany(id, []);
+      await userGroupService.createMany(id, data.users as number[]);
 
       await groupMapService.deleteMany(id);
       await groupMapService.createMany(id, data.maps as number[]);

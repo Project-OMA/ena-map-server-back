@@ -19,7 +19,7 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
 
   public async getGroupMapByUser(id: number):Promise<MapDTO[]> {
     return dao.$queryRaw<any>`
-      SELECT mapa.* FROM  tb_group AS  tg 
+      SELECT DISTINCT mapa.* FROM  tb_group AS  tg 
       inner join rel_group_map AS grupoMap 
       on grupoMap.id_group = tg.id 
       inner join rel_user_group AS userGroup
