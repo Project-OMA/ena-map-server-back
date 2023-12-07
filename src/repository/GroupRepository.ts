@@ -37,7 +37,7 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
   public async getMaxMapsFromGroup(idGroup: number):Promise<any[]> {
     return dao.$queryRaw<any>`
       SELECT COUNT(*) as count
-      FROM servidor_mapas.rel_group_map AS rgm
+      FROM rel_group_map AS rgm
       WHERE rgm.id_group = ${idGroup}
       `
   }
@@ -48,11 +48,11 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
       tm.*,
       rmu.in_completed,
       rgm.order
-      FROM servidor_mapas.rel_user_group as userGroup 
-      INNER JOIN servidor_mapas.rel_group_map rgm on rgm.id_group = userGroup.id_group 
-      INNER JOIN servidor_mapas.rel_map_user as rmu on rmu.id_user = userGroup.id_user    
+      FROM rel_user_group as userGroup 
+      INNER JOIN rel_group_map rgm on rgm.id_group = userGroup.id_group 
+      INNER JOIN rel_map_user as rmu on rmu.id_user = userGroup.id_user    
       AND rmu.id_map = rgm.id_map
-      INNER JOIN servidor_mapas.tb_map tm on tm.id = rgm.id_map 
+      INNER JOIN tb_map tm on tm.id = rgm.id_map 
       WHERE userGroup.id_group = ${idGroup} and userGroup.id_user = ${idUser}
       GROUP BY rgm.id_map
       ORDER BY rgm.order
