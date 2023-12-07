@@ -24,6 +24,8 @@ routes.route('/users/:userId/groups')
 
 routes.route('/').get(authorizateUser([ADMIN, TEACHER]), validators.paginationValidator, groupController.findAllPaged);
 
+routes.route('/:idUser/by-user').get(authorizateUser([ADMIN, TEACHER,STUDENT]), validators.paginationValidator, groupController.findAllGroupsByUserPaged);
+
 routes
   .route('/')
   .post(authorizateUser([ADMIN, TEACHER]), validators.groupValidator.create, expressValidator, groupController.create);
@@ -37,7 +39,7 @@ routes
 //     groupController.createWithUsers,
 //   );
 
-routes.route('/:id').get(authorizateUser([ADMIN, TEACHER]), validators.idParamValidator, groupController.getById);
+routes.route('/:id').get(authorizateUser([ADMIN, TEACHER, STUDENT]), validators.idParamValidator, groupController.getById);
 
 routes.route('/:id/maps').get(validators.idParamValidator, groupController.getMapsFromGroup);
 
@@ -66,6 +68,15 @@ pubRoutes
     groupController.getGroupMapByUser,
   );
 
+pubRoutes
+  .route('/:idMap/:email/save')
+  .put(
+    validators.groupValidator.updateMapUser,
+    expressValidator,
+    userController.updateMapUserByEmail,
+  );
+
+  
 // routes
 //   .route('/:id/include/users/maps')
 //   .put(

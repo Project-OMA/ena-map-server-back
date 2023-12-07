@@ -18,6 +18,11 @@ const GroupBodyUserMapsValidator = [
   param('email').isString(),
 ];
 
+const GroupBodyUserMapsUpdateValidator = [
+  param('email').isString(),
+  param('idMap').isString(),
+];
+
 const GroupMapsByUserValidator = [
   query('limit').exists().isString(),
   query('offset').exists().isString(),
@@ -30,5 +35,6 @@ export const groupValidator = {
   create: [...GroupBodyValidator],
   update: [...GroupBodyUpdateValidator],
   userMaps: [...GroupBodyUserMapsValidator],
-  mapsByUser: [...GroupMapsByUserValidator]
+  mapsByUser: [...GroupMapsByUserValidator],
+  updateMapUser: [...GroupBodyUserMapsUpdateValidator]
 };

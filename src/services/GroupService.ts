@@ -79,6 +79,10 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
       await groupMapService.deleteMany(id);
       await groupMapService.createMany(id, data.maps as number[]);
 
+      console.log('testeeeeeeeeeeeeeee a22323')
+
+      console.log(data.maps, data.users)
+      await userMapService.createMany(data.maps as number[], data.users as number[]);
 
       return this.buildGroup(await groupRepository.getById(id));
     }
@@ -95,6 +99,7 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
 
       await groupMapService.createMany(groupCreated.id, data.maps as number[]);
 
+      console.log(data.maps, data.users)
       await userMapService.createMany(data.maps as number[], data.users as number[]);
 
       return this.buildGroup(await groupRepository.getById(groupCreated.id));
@@ -133,7 +138,15 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
   }
 
   public async getMapsFromGroupByUserAndGroup(idUser: number, idGroup: number, limit: number, offset: number): Promise<any> {
-   return await groupRepository.getMapsFromGroupByUserAndGroup(idGroup, idUser, limit, offset)
+
+   const [countResponse] = await groupRepository.getMaxMapsFromGroup(idGroup);
+
+   const mapsResponse = await groupRepository.getMapsFromGroupByUserAndGroup(idGroup, idUser, limit, offset)
+
+   return {
+    count: Number(countResponse?.count),
+    maps: mapsResponse
+   }
   }
 }
 

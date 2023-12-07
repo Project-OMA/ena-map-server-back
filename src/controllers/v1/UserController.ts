@@ -4,6 +4,7 @@ import { CrudController } from './CrudController';
 import { userService } from '../../services/UserService';
 import { IAuthenticate } from '../../types/userTypes';
 import deleteFile from '../../utils/deleteFile';
+import { userMapService } from '../../services/UserMapService';
 
 class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDTO> {
   public authenticate = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
@@ -66,6 +67,18 @@ class UserController extends CrudController<UserDTO, CreateUserDTO, UpdateUserDT
       const requestToken: string = req.headers['authorization'] || '';
       const id = parseInt(req.params.id);
       return res.status(200).json(await userService.updateCustom(id, req.body, requestToken));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
+  public updateMapUserByEmail = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const email = req.params.email;
+      const idMap = parseInt(req.params.idMap);
+
+      return res.status(200).json(await userMapService.updateByUser(email, idMap));
     } catch (error) {
       console.error(error);
       next(error);

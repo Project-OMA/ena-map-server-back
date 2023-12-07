@@ -1,6 +1,6 @@
 export interface UpdateUserMapDTO {
-    id_user: number;
-    id_map: number;
+    id_user?: number;
+    id_map?: number;
     in_completed: boolean;
   }
   
