@@ -16,6 +16,9 @@ import serveStatic from 'serve-static';
 import path from 'path';
 import { Authentication } from './middlewares/AuthorizateUser';
 
+import swaggerUI from "swagger-ui-express";
+import swaggerDocument from "./config/swagger.json"
+
 export default class Server {
   public express: express.Application;
 
@@ -69,6 +72,7 @@ export default class Server {
   private routes(): void {
     this.express.use('/v1', Authentication, routes);
     this.express.use('/pub', pubRoutes);
+    this.express.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
     this.express.use(errorHandler);
   }
 
