@@ -19,16 +19,17 @@ class GroupRepository extends CrudRepository<GroupDTO, CreateGroupDTO, UpdateGro
 
   public async getGroupMapByUser(id: number):Promise<MapDTO[]> {
     return dao.$queryRaw<any>`
-      SELECT DISTINCT mapa.* FROM  tb_group AS  tg 
-      inner join rel_group_map AS grupoMap 
-      on grupoMap.id_group = tg.id 
-      inner join rel_user_group AS userGroup
-      on userGroup.id_group  = userGroup.id_group 
-      inner join rel_map_user AS userMap 
-      on userMap.id_map = grupoMap.id_map and userMap.in_completed = false
-      inner join tb_map as mapa on mapa.id = userMap.id_map
-      where userGroup.id_user = ${id}
-      order by tg.created_at, grupoMap.order
+      SELECT 
+      mapa.*,
+      rmu.in_completed
+      FROM rel_user_group AS userGroup 
+      INNER JOIN tb_group AS gr ON gr.id = userGroup.id_group 
+      INNER JOIN rel_group_map AS rgm ON rgm.id_group = userGroup.id_group 
+      INNER JOIN tb_map AS mapa ON mapa.id = rgm.id_map
+      INNER JOIN rel_map_user AS rmu ON rmu.id_user = userGroup.id_user AND rmu.id_map = rgm.id_map
+      WHERE userGroup.id_user = ${id} AND rmu.in_completed = 0
+      GROUP BY rgm.id_map
+      ORDER BY gr.created_at ,rgm.order
       LIMIT 1
       `
   }

@@ -79,8 +79,6 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
       await groupMapService.deleteMany(id);
       await groupMapService.createMany(id, data.maps as number[]);
 
-      console.log('testeeeeeeeeeeeeeee a22323')
-
       console.log(data.maps, data.users)
       await userMapService.createMany(data.maps as number[], data.users as number[]);
 

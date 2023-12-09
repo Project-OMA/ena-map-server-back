@@ -64,6 +64,26 @@ class MapService extends CrudService<MapDTO, CreateMapDTO, UpdateMapDTO> {
     
   }
 
+  override async create(data: CreateMapConvert): Promise<any> {
+    const newData: any = {
+      name: data.name,
+      url: data.url,
+      id_owner: parseInt(`${data.id_owner}`),
+    }
+
+      this.saveXmlFile({ name: data.files[0].name,  file: data.files[0] })
+      const mapJson = await this.convertXmlFile({ name: data.files[0].name, minify: true, file: data.files[0] });
+
+      if(!mapJson) {
+        throw new Error('Failed to convert JSON');
+      }
+
+    newData.tag = JSON.stringify(mapJson);
+    newData.thumb_url = data.files[0].name;
+    
+    return mapRepository.create(newData);
+  }
+ 
   async downloadMap(idMapa: number, res: any): Promise<any> {
     const mapResponse = await mapRepository.getById(idMapa);
 
