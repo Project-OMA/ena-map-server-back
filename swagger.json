@@ -745,7 +745,7 @@
         },
         "/v1/maps/convert_xml": {
             "post": {
-                "description": "Converte um Mapa para XML através de um Script. Obs: Ação permitida apenas para -> Administrador, Professor",
+                "description": "Este Script converte arquivos de Mapas em formato XML, que é lido pelo jogo ENA, para o formato JSON, que é registrado e lido pelo Servidor de Mapas. Obs: Ação permitida apenas para -> Administrador, Professor",
                 "tags": [ "Mapas"],
                 "security": [
                     { "bearerAuth": [] }
@@ -755,7 +755,7 @@
                         "in": "formData",
                         "name": "file",
                         "type": "array",
-                        "description": "Arquivo do Mapa Json"
+                        "description": "Arquivo do Mapa XML"
                     }
                 ],
                 "responses": {

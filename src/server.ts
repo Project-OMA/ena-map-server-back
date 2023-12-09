@@ -17,7 +17,7 @@ import path from 'path';
 import { Authentication } from './middlewares/AuthorizateUser';
 
 import swaggerUI from "swagger-ui-express";
-import swaggerDocument from "./config/swagger.json"
+import swaggerDocument from "../swagger.json"
 
 export default class Server {
   public express: express.Application;
