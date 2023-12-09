@@ -82,13 +82,3 @@ routes.route('/listAll').get(authorizateUser([ADMIN, TEACHER]), userController.l
 ```
 
 Como resultado, obtemos como resultado, a permissão deste endpoint podendo ser feito apenas por usuários com o cargo de ADMIN e TEACHER.
-
-<br>
-
-## Issues da aplicação
-
-### Refresh Token
-
-Ao usuário autenticar-se na aplicação, é gerado um prazo de expiração do Token, definido para durar em até 16 horas. Porém quando este tempo é ultrapassado, será dado como resposta ao usuário um erro de autenticação devido o token ter expirado.
-
-É desejável que, para que a aplicação funcione em harmonia com a interface, um endpoint para o **refresh token** seja feito. Como resposta ao usuário, será gerada uma renovação do token para o usuário manter-se logado na aplicação, sem precisar ser feito o login sempre que o prazo do token expirar.
