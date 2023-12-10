@@ -7,6 +7,8 @@ import { userGroupService } from './UserGroupService';
 import { groupMapService } from './GroupMapService';
 import { userMapService } from './UserMapService';
 import { userRepository } from '../repository/UserRepository';
+import { userGroupRepository } from '../repository/UserGroupRepository';
+import { groupMapRepository } from '../repository/GroupMapRepository';
 
 class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO> {
   // async createWithUsers(data: CreateGroupDTO): Promise<any> {
@@ -103,6 +105,19 @@ class GroupService extends CrudService<GroupDTO, CreateGroupDTO, UpdateGroupDTO>
       return this.buildGroup(await groupRepository.getById(groupCreated.id));
     }
   }
+
+  override async delete(id:number):Promise<any> {
+
+    const groupSelected = await groupRepository.getById(id);
+ 
+    if(!groupSelected){
+     throw new Error('Group not found.')
+    }
+ 
+    await groupMapRepository.deleteMany(id);
+    await userGroupRepository.deleteMany(id);
+    return await groupRepository.delete(id);
+  };
 
   async findAllPaged(page: string, limit: string, search: string, userId: number | undefined = undefined): Promise<any | null> {
     const { groups, count } = await groupRepository.getAllPaged(page, limit, search, userId);

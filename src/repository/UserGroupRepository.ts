@@ -4,3 +4,4 @@ import { CreateUserGroupDTO, UpdateUserGroupDTO, UserGroupDTO } from '../entitie
 class UserGroupRepository extends CrudRepository<UserGroupDTO, CreateUserGroupDTO, UpdateUserGroupDTO> {}
 
 export const userGroupRepository = new UserGroupRepository('userGroup', 'id_group');
+export const userGroupRepositoryByUser = new UserGroupRepository('userGroup', 'id_user');

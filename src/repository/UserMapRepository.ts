@@ -26,4 +26,5 @@ class UserMapRepository extends CrudRepository<UserMapDTO, CreateUserMapDTO, Upd
 }
 
 export const userMapRepository = new UserMapRepository('userMap', 'id_map');
+export const userMapRepositoryByUser = new UserMapRepository('userMap', 'id_user');
 

@@ -34,6 +34,8 @@ routes
 
 routes.route('/file').post(authorizateUser([ADMIN, TEACHER]), upload.single('tb_users'), userController.createByFile);
 
+routes.route('/:id').delete(validators.idParamValidator, userController.delete);
+
 const userRouter = routes;
 
 export default userRouter;
