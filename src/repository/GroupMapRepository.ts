@@ -14,3 +14,5 @@ class GroupMapRepository extends CrudRepository<GroupMapDTO, CreateGroupMapDTO, 
 }
 
 export const groupMapRepository = new GroupMapRepository('groupMap', 'id_group');
+
+export const groupMapRepositoryByIdMap = new GroupMapRepository('groupMap', 'id_map');

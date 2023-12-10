@@ -28,6 +28,11 @@ export abstract class CrudService<Entity, CreateDTO, UpdateDTO> {
     return this.model.delete(id);
   }
 
+
+  public async deleteMany(id: number): Promise<Entity | null> {
+    return this.model.deleteMany(id);
+  }
+  
   public async update(id: number, data: UpdateDTO): Promise<Entity | null> {
     return this.model.update(id, data);
   }

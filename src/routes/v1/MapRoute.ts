@@ -47,7 +47,7 @@ routes.route('/:id/download/public').get(validators.idParamValidator, mapControl
 
 routes.route('/convert_xml').post(multer().array('file'), handlerFileMap, mapController.convertXmlFile);
 
-// routes.route('/:id').delete(validators.idParamValidator, mapController.delete);
+routes.route('/:id').delete(validators.idParamValidator, mapController.delete);
 
 const mapRouter = routes;
 

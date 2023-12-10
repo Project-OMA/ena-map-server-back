@@ -1,5 +1,4 @@
 import { CrudService } from './CrudService';
-import { userGroupRepository } from '../repository/UserGroupRepository';
 import { CreateUserMapDTO, UpdateUserMapDTO, UserMapDTO } from '../entities/UserMap';
 import { userMapRepository } from '../repository/UserMapRepository';
 import { userRepository } from '../repository/UserRepository';
@@ -21,9 +20,9 @@ class UserMapService extends CrudService<UserMapDTO, CreateUserMapDTO, UpdateUse
     }
   }
 
-  async deleteMany(groupId: number) {
-    await userMapRepository.deleteMany(groupId);
-  }
+  // async deleteMany(groupId: number) {
+  //   await userMapRepository.deleteMany(groupId);
+  // }
 
 
   public async updateByUser(email: string, mapId: number):Promise<any> {

@@ -53,6 +53,30 @@ export abstract class CrudController<Entity, CreateDTO, UpdateDTO> {
     }
   };
 
+  public delete = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const id = parseInt(req.params.id + '');
+      return res.status(200).json(await this.service.delete(id));
+      //   return ok(res, await this.service.update(id, data));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
+
+  public deleteMany = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
+    try {
+      const id = parseInt(req.params.id + '');
+      return res.status(200).json(await this.service.deleteMany(id));
+      //   return ok(res, await this.service.update(id, data));
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  };
+
+
   public list = async (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> => {
     try {
       //   const data = req.pagination;

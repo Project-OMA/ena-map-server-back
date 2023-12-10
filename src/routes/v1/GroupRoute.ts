@@ -59,7 +59,9 @@ routes
     expressValidator,
     groupController.getMapsFromGroupByUserAndGroup,
   );
-  
+
+routes.route('/:id').delete(validators.idParamValidator, groupController.delete);
+
 pubRoutes
   .route('/next-map/:email')
   .get(
@@ -76,7 +78,7 @@ pubRoutes
     userController.updateMapUserByEmail,
   );
 
-  
+
 // routes
 //   .route('/:id/include/users/maps')
 //   .put(

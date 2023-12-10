@@ -4,7 +4,8 @@ import { CrudService } from './CrudService';
 import { scriptReader } from '../utils/scriptReader';
 import fs from 'fs';
 import path from 'path';
-import { badRequest } from '../helpers/responseHelper';
+import {  groupMapRepositoryByIdMap } from '../repository/GroupMapRepository';
+import { userMapRepository } from '../repository/UserMapRepository';
 
 class MapService extends CrudService<MapDTO, CreateMapDTO, UpdateMapDTO> {
   async getMapsByName(query: string) {
@@ -84,6 +85,20 @@ class MapService extends CrudService<MapDTO, CreateMapDTO, UpdateMapDTO> {
     return mapRepository.create(newData);
   }
  
+  override async delete(id:number):Promise<any> {
+
+   const mapSelected = await mapRepository.getById(id);
+
+   if(!mapSelected){
+    throw new Error('Map not found.')
+   }
+
+   this.deleteOldFileXml(mapSelected.thumb_url);
+   await groupMapRepositoryByIdMap.deleteMany(id);
+   await userMapRepository.deleteMany(id);
+   return await mapRepository.delete(id);
+  };
+
   async downloadMap(idMapa: number, res: any): Promise<any> {
     const mapResponse = await mapRepository.getById(idMapa);
 
