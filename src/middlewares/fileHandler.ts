@@ -18,6 +18,5 @@ export const handlerFileMap = (req: Request, res: Response, next: NextFunction) 
     req.body.files = handled_files;
   }
 
-
   return next();
 };

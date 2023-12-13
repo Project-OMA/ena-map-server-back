@@ -11,6 +11,8 @@ import jwt from 'jsonwebtoken';
 import { UserToken } from '../types/UserToken';
 import fs from 'fs';
 import UserTypes from '../constants/UserTypes';
+import { userGroupRepositoryByUser } from '../repository/UserGroupRepository';
+import { userMapRepositoryByUser } from '../repository/UserMapRepository';
 class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
   async createCustom(data: CreateUserDTO): Promise<any> {
     const [userByEmail] = await userRepository.getUserByEmail(data.email);
@@ -165,6 +167,20 @@ class UserService extends CrudService<UserDTO, CreateUserDTO, UpdateUserDTO> {
   rowItem(row: string) {
     return row.endsWith('\r') ? row.replace('\r', '') : row;
   }
+
+  override async delete(id:number):Promise<any> {
+
+    const userSelected = await userRepository.getById(id);
+ 
+    if(!userSelected){
+     throw new Error('User not found.')
+    }
+ 
+    await userGroupRepositoryByUser.deleteMany(id);
+    await userMapRepositoryByUser.deleteMany(id);
+
+    return await userRepository.delete(id);
+  };
 }
 
 export const userService = new UserService(userRepository);
